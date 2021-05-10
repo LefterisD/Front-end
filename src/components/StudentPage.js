@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import InputText from "./InputText";
 
 const StudentPage = ({ inputText, setInputText, getMistakes, mistakes }) => {

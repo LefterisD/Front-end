@@ -27,9 +27,7 @@ function App() {
   const getMistakes = (e) => {
     e.preventDefault();
 
-    fetch(`http://localhost:5000/api/v1/check/${inputText}`, {
-      mode: "no-cors",
-    })
+    fetch(` http://127.0.0.1:5000/api/v1/check/${inputText}`)
       .then((res) => res.json())
       .then((data) => {
         var json_obj = JSON.parse(JSON.stringify(data));
@@ -57,7 +55,7 @@ function App() {
             <Navbar OpenModal={openModal} />
             <div id="skewed">
               <div className="jumbo">
-                <h1>CheckIt</h1>
+                <h1> CheckIt </h1>
                 <p>
                   Welcome to CheckIt, a web tool used by students and professors
                   all around the world to help them find mistakes in essays.
@@ -72,7 +70,7 @@ function App() {
                 </Link>
               </div>
             </div>
-            <div id="not_skewed"></div>
+            <div id="not_skewed"> </div>
           </Route>
           <Route path="/professors">
             <ProfessorPage
@@ -102,7 +100,7 @@ function App() {
       >
         <header>
           <button onClick={closeModal}>
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times"> </i>
           </button>
         </header>
         <div className="container">
@@ -302,23 +300,24 @@ function App() {
                 />
               </svg>
             </div>
-            <h1>CheckIt</h1>
+            <h1> CheckIt </h1>
           </div>
           <div className="main-section">
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Cupiditate et pariatur aspernatur autem? Quo debitis amet soluta
-              accusamus! Blanditiis aut unde ipsa eligendi quo quas expedita
-              nesciunt commodi error. Praesentium eius in reprehenderit debitis
-              est, eum repudiandae sint, quasi natus dolor amet explicabo
-              deleniti accusantium, ratione soluta ab corrupti facilis quaerat
-              autem quia voluptatum vero cumque? Sequi possimus, illo facere et
-              nostrum laudantium quia iusto quos eos quas commodi. Laudantium in
-              nihil deserunt odio. Nihil tenetur perspiciatis facere deserunt
-              consequatur rerum quaerat ea aliquid.
+              Lorem ipsum, dolor sit amet consectetur adipisicing
+              elit.Cupiditate et pariatur aspernatur autem ? Quo debitis amet
+              soluta accusamus!Blanditiis aut unde ipsa eligendi quo quas
+              expedita nesciunt commodi error.Praesentium eius in reprehenderit
+              debitis est, eum repudiandae sint, quasi natus dolor amet
+              explicabo deleniti accusantium, ratione soluta ab corrupti facilis
+              quaerat autem quia voluptatum vero cumque ? Sequi possimus, illo
+              facere et nostrum laudantium quia iusto quos eos quas
+              commodi.Laudantium in nihil deserunt odio.Nihil tenetur
+              perspiciatis facere deserunt consequatur rerum quaerat ea
+              aliquid.Sequi possimus.
             </p>
             <div className="icon-wrapper">
-              <i class="fab fa-github"></i>
+              <i class="fab fa-github"> </i>
             </div>
           </div>
         </div>

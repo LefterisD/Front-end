@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Essays from "./Essays";
-import HighlightText from "./HighlightText";
 import { HighlightWithinTextarea } from "react-highlight-within-textarea";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import Charts from "./Charts";
 
 const InputText = ({
   setInputText,
@@ -111,7 +108,7 @@ const InputText = ({
   //vazei sto map tis lekseis kai to poses fores einai lathos
   const setOrthWords = (word) => {
     let counter = 0; // xrisimopoieite gia na elegxoume ama mia leksi uparxei idi mesa sto map
-    if (fakeWordsOrth.length != 0) {
+    if (fakeWordsOrth.length !== 0) {
       fakeWordsOrth.map((item) => {
         //console.log("Mpike sto map");
         if (item.word === word) {
@@ -122,7 +119,7 @@ const InputText = ({
           Update_word_count(word);
         }
       });
-      if (counter == 0) {
+      if (counter === 0) {
         // console.log("DEn Yparxei i leksi");
         let newobject = {
           word: word,
@@ -144,7 +141,7 @@ const InputText = ({
 
   const setGramWords = (word) => {
     let counter = 0; // xrisimopoieite gia na elegxoume ama mia leksi uparxei idi mesa sto map
-    if (fakeWordsGram.length != 0) {
+    if (fakeWordsGram.length !== 0) {
       fakeWordsGram.map((item) => {
         //console.log("Mpike sto map");
         if (item.word === word) {
@@ -154,7 +151,7 @@ const InputText = ({
         }
       });
       if (counter == 0) {
-        // console.log("DEn Yparxei i leksi");
+        // console.log("DEn Yparxei i leksi")
         let newobject = {
           word: word,
           count: 1,
