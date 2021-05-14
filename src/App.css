@@ -866,6 +866,7 @@ mark {
     align-items: center;
     margin-bottom: 100px;
     margin-top: 150px;
+    width: 100%;
 }
 
 .donut {
@@ -1041,7 +1042,7 @@ mark {
 
 /* small laptop */
 
-@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (min-device-height: 600px) and (max-device-height: 800px) {
+@media screen and (min-device-width: 800px) and (max-device-width: 1600px) and (min-device-height: 600px) and (max-device-height: 800px) {
     .cards {
         margin-top: 22vh !important;
     }
@@ -1062,6 +1063,7 @@ mark {
         width: 760px;
         height: 430px;
     }
+    
 }
 
 

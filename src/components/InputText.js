@@ -32,8 +32,17 @@ const InputText = ({
   let fakeWordsOrth = [];
   let fakeWordsGram = [];
 
-  /*---------------------------------- IDB Start ---------------------*/
-  //Call it once when component mounts to create the database with 3 object-stores orth gram syntax
+  /*
+    ------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+  ---------------------------------- IDB Start ---------------------*/
+  /*//Call it once when component mounts to create the database with 3 object-stores orth gram syntax
   const create_DB = () => {
     let openRequest = indexedDB.open("Mistakes", 1);
     openRequest.onupgradeneeded = function () {
@@ -43,10 +52,28 @@ const InputText = ({
       db.createObjectStore("Gram", { autoIncrement: true });
       db.createObjectStore("Syntax", { autoIncrement: true });
     };
-  };
+  };*/
 
+  /*const testFunction = () => {
+    fetch("http://127.0.0.1:5000/mistakes")
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
+        console.log("DATABASE FROM API");
+        console.log(json_obj);
+      });
+  };*/
+  /*
+    ------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
+    -
+    -
+    -
+    -
+    -
+    -
+    -
   const Update_word_count = (word_to_update) => {
-    let openRequest = indexedDB.open("Mistakes", 2);
+    let openRequest = indexedDB.open("Mistakes", 1);
     openRequest.onsuccess = function () {
       let db = openRequest.result;
       let transaction = db.transaction("Orth", "readwrite");
@@ -94,6 +121,13 @@ const InputText = ({
 
   /*---------------------------------- IDB END ---------------------*/
 
+  //Fetching the api to insert into the db or update a specific word count
+  const insert_to_database = (word, type) => {
+    fetch(`http://127.0.0.1:5000/mistakes/${type}/${word}`, {
+      method: "POST",
+    }).then((results) => console.log(results));
+  };
+
   const inputTextHandler = (e) => {
     let input_value = e.target.value;
     let char_count = input_value.length;
@@ -116,7 +150,8 @@ const InputText = ({
           console.log("omoia", word);
           item.count = item.count + 1;
           counter = 1;
-          Update_word_count(word);
+          //Update_word_count(word);
+          insert_to_database(word, "spelling");
         }
       });
       if (counter === 0) {
@@ -126,7 +161,8 @@ const InputText = ({
           count: 1,
         };
         fakeWordsOrth.push(newobject);
-        Add_new_word(word);
+        //Add_new_word(word);
+        insert_to_database(word, "spelling");
       }
     } else {
       //console.log(" pinakas kenos");
@@ -135,7 +171,8 @@ const InputText = ({
         count: 1,
       };
       fakeWordsOrth.push(newobject);
-      Add_new_word(word);
+      //Add_new_word(word);
+      insert_to_database(word, "spelling");
     }
   };
 
@@ -148,6 +185,7 @@ const InputText = ({
           //console.log("Yparxei idia leksi",item.word);
           item.count = item.count + 1;
           counter = 1;
+          insert_to_database(word, "grammar");
         }
       });
       if (counter == 0) {
@@ -157,6 +195,7 @@ const InputText = ({
           count: 1,
         };
         fakeWordsGram.push(newobject);
+        insert_to_database(word, "grammar");
       }
     } else {
       //console.log(" pinakas kenos");
@@ -165,6 +204,7 @@ const InputText = ({
         count: 1,
       };
       fakeWordsGram.push(newobject);
+      insert_to_database(word, "grammar");
     }
   };
 
@@ -223,11 +263,6 @@ const InputText = ({
       return words;
     }
   };
-
-  //Initialize indexedDB when the app opens for the first time
-  useEffect(() => {
-    create_DB();
-  }, []);
 
   useEffect(() => {
     fakeWordsOrth = [];

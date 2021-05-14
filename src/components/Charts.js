@@ -36,56 +36,34 @@ const Charts = ({
       pv: countSti,
     },
   ];
-  const dataBarGram = [];
   const [dataBarOrth, setDataBarOrth] = useState([]);
+  const [dataBarGram, setDataBarGram] = useState([]);
 
-  /*const findWordsBarChar = (mistakes) => {
-      //dataBarOrth = [];
-      if (mistakes.length != 0) {
-        //taksinomisi
-        wordsOrth.sort(function (a, b) {
-          return b.count - a.count;
-        });
-      }
+  const findWordsBarChar = (mistakes) => {
+    if (mistakes.length != 0) {
+      //taksinomisi
+      wordsGram.sort(function (a, b) {
+        return b.count - a.count;
+      });
+    }
 
-      if (mistakes.length != 0) {
-        //taksinomisi
-        wordsGram.sort(function (a, b) {
-          return b.count - a.count;
-        });
-      }
-
-      if (mistakes.length != 0) {
-        let counter = 0;
-        wordsGram.map((word) => {
-          if (counter < 5) {
-            counter++;
-            let newBarElement = {
-              name: word.word,
-              pv: word.count,
-              amt: 2210,
-            };
-            dataBarGram.push(newBarElement);
-          }
-        });
-      }
-      if (mistakes.length != 0) {
-        let counter = 0;
-        wordsOrth.map((word) => {
-          if (counter < 5) {
-            counter++;
-            let newBarElement = {
-              name: word.word,
-              pv: word.count,
-              amt: 2210,
-            };
-            dataBarOrth.push(newBarElement);
-          }
-        });
-      }
-    };*/
+    if (mistakes.length != 0) {
+      let counter = 0;
+      wordsGram.map((word) => {
+        if (counter < 5) {
+          counter++;
+          let newBarElement = {
+            name: word.word,
+            count: word.count,
+            amt: 2210,
+          };
+          dataBarGram.push(newBarElement);
+        }
+      });
+    }
+  };
   //Call it once when component mounts to create the database with 3 object-stores orth gram syntax
-  const create_DB = () => {
+  /*const create_DB = () => {
     console.log("CREATE DB");
     let openRequest = indexedDB.open("Mistakes", 1);
     openRequest.onupgradeneeded = function () {
@@ -96,11 +74,11 @@ const Charts = ({
       db.createObjectStore("Gram", { autoIncrement: true });
       db.createObjectStore("Syntax", { autoIncrement: true });
     };
-  };
-
+  };*/
+  /*------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
   const Get_data = () => {
     let temp_data = [];
-    let openRequest = indexedDB.open("Mistakes", 2);
+    let openRequest = indexedDB.open("Mistakes", 1);
     openRequest.onsuccess = function () {
       let db = openRequest.result;
       let transaction = db.transaction("Orth", "readonly");
@@ -129,20 +107,67 @@ const Charts = ({
       };
     };
   };
+*/
+  const getGramData = () => {
+    let temp_data = [];
+    let type = "grammar";
+    fetch(`http://127.0.0.1:5000/mistakes/${type}`)
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
 
-  //Initialize indexedDB when the app opens for the first time
+        json_obj.map((item) => {
+          let temp_item = {
+            name: item.word,
+            count: item.count,
+            amt: 2210,
+          };
+          temp_data.push(temp_item);
+        });
+        //Sort data
+        temp_data.sort(function (a, b) {
+          return b.count - a.count;
+        });
+        //Show the 5 most frequent
+        temp_data = temp_data.slice(0, 6);
+        setDataBarGram(temp_data);
+      });
+  };
+
+  const getOrthData = () => {
+    let temp_data = [];
+    let type = "spelling";
+    fetch(`http://127.0.0.1:5000/mistakes/${type}`)
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
+
+        json_obj.map((item) => {
+          let temp_item = {
+            name: item.word,
+            count: item.count,
+            amt: 2210,
+          };
+          temp_data.push(temp_item);
+        });
+        //Sort data
+        temp_data.sort(function (a, b) {
+          return b.count - a.count;
+        });
+        //Show the 5 most frequent
+        temp_data = temp_data.slice(0, 6);
+        setDataBarOrth(temp_data);
+      });
+  };
+
   useEffect(() => {
-    create_DB();
-  }, []);
-
-  //console.log("Databarorth", dataBarOrth);
+    console.log("MISTAKE USEFFECT");
+    getOrthData();
+    getGramData();
+  }, [mistakes]);
 
   return (
     <div className="section">
-      {
-        //findWordsBarChar(mistakes)
-        Get_data()
-      }
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           className="barchart"
@@ -159,7 +184,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="pv" fill="#243665" />
+          <Bar dataKey="count" fill="#243665" />
         </BarChart>
       </ResponsiveContainer>
       <ResponsiveContainer width="100%" height={300}>
@@ -202,7 +227,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="pv" fill="#8BD8BD" />
+          <Bar dataKey="count" fill="#8BD8BD" />
         </BarChart>
       </ResponsiveContainer>
     </div>

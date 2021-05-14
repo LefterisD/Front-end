@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import Student from "./components/Student";
 import Professor from "./components/Professor";
@@ -46,6 +46,22 @@ function App() {
   function afterOpenModal() {
     subtitle.style.color = "#f00";
   }
+
+  //Call it once when component mounts to create the database with 3 object-stores orth gram syntax
+  const create_DB = () => {
+    let openRequest = indexedDB.open("Mistakes", 1);
+    openRequest.onupgradeneeded = function () {
+      let db = openRequest.result;
+      //Each store object must a have a unique key set as the word itself
+      db.createObjectStore("Orth", { keyPath: "word" });
+      db.createObjectStore("Gram", { autoIncrement: true });
+      db.createObjectStore("Syntax", { autoIncrement: true });
+    };
+  };
+
+  useEffect(() => {
+    create_DB();
+  }, []);
 
   return (
     <div className="App">
