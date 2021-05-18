@@ -16,6 +16,7 @@ const InputText = ({
   countSti,
   setWordsOrth,
   setWordsGram,
+  user,
 }) => {
   //const [textareaValue, setTextareaValue] = useState("");
   const [textAreaInput, setTextAreaInput] = useState("");
@@ -123,7 +124,7 @@ const InputText = ({
 
   //Fetching the api to insert into the db or update a specific word count
   const insert_to_database = (word, type) => {
-    fetch(`http://127.0.0.1:5000/mistakes/${type}/${word}`, {
+    fetch(`http://127.0.0.1:5000/mistakes/${user}/${type}/${word}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };

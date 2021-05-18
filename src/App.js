@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import ProfessorPage from "./components/ProfessorPage";
 import StudentPage from "./components/StudentPage";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import uniqid from "uniqid";
 
 const customStyles = {
   overlay: {
@@ -46,22 +47,6 @@ function App() {
   function afterOpenModal() {
     subtitle.style.color = "#f00";
   }
-
-  //Call it once when component mounts to create the database with 3 object-stores orth gram syntax
-  const create_DB = () => {
-    let openRequest = indexedDB.open("Mistakes", 1);
-    openRequest.onupgradeneeded = function () {
-      let db = openRequest.result;
-      //Each store object must a have a unique key set as the word itself
-      db.createObjectStore("Orth", { keyPath: "word" });
-      db.createObjectStore("Gram", { autoIncrement: true });
-      db.createObjectStore("Syntax", { autoIncrement: true });
-    };
-  };
-
-  useEffect(() => {
-    create_DB();
-  }, []);
 
   return (
     <div className="App">

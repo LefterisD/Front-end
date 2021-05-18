@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Essays from "./Essays";
 import InputText from "./InputText";
 import Modal from "react-modal";
 import essaypng from "../assets/essaypng.png";
 import Charts from "./Charts";
+import uniqid from "uniqid";
 
 const customStyles = {
   overlay: {
@@ -22,6 +23,7 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
   const [countSti, setcountSti] = useState(0);
   const [wordsOrth, setWordsOrth] = useState([]);
   const [wordsGram, setWordsGram] = useState([]);
+  const [user, setUser] = useState("");
 
   function openAddNewEssayModal(e) {
     e.preventDefault();
@@ -32,11 +34,39 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
     setIsOpen(false);
   }
 
+  const deleteMistakes = () => {
+    fetch(`http://127.0.0.1:5000/mistakes/delete_by_id/${user}`, {
+      method: "POST",
+    }).then((results) => console.log(results));
+  };
+  //Sends a POST request to our users api to insert new user into the DB
+  const addUser = (id) => {
+    let role = "professor";
+    fetch(`http://127.0.0.1:5000/user/${role}/${id}`, {
+      method: "POST",
+    }).then((results) => console.log(results));
+  };
+
+  //Checks if local storage uniqid EXISTS and sets the global userid state to the stored id
+  //IF not it uses an external uniqid generator and sets the uniqid in local storage
+  //then is uses the addUser function from above to insert the user into the users table
+  useEffect(() => {
+    let stored_id = localStorage.getItem("uniqid");
+    if (stored_id) {
+      setUser(stored_id);
+    } else {
+      let uniid = uniqid();
+      localStorage.setItem("uniqid", uniid);
+      addUser(uniid);
+    }
+  }, []);
+
   return (
     <div className="return">
       <div className="title-wrapper">
         <h1 className="title-prof">Professor</h1>
       </div>
+
       <InputText
         setInputText={setInputText}
         getMistakes={getMistakes}
@@ -52,7 +82,11 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
         wordsOrth={wordsOrth}
         setWordsGram={setWordsGram}
         wordsGram={wordsGram}
+        user={user}
       />
+      <button onClick={deleteMistakes} id="delete">
+        DELETE
+      </button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeAddNewEssayModal}
@@ -131,6 +165,7 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
         wordsOrth={wordsOrth}
         wordsGram={wordsGram}
         mistakes={mistakes}
+        user={user}
       />
       <section className="essay-section">
         <Essays addEssay={openAddNewEssayModal} />

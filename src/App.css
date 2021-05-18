@@ -1135,3 +1135,8 @@ mark {
         justify-content: space-between;
     }
 }
+
+#delete {
+    background: red;
+    padding: 10px;
+}

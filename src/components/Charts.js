@@ -21,6 +21,7 @@ const Charts = ({
   wordsOrth,
   wordsGram,
   mistakes,
+  user,
 }) => {
   const dataPie = [
     {
