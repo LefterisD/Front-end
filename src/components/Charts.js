@@ -22,23 +22,39 @@ const Charts = ({
   wordsGram,
   mistakes,
   user,
+  role,
 }) => {
-  const dataPie = [
-    {
-      name: "Ορθογραφικά Λάθη",
-      pv: countOrth,
-    },
-    {
-      name: "Λάθη Γραμματικης",
-      pv: countGram,
-    },
-    {
-      name: "Λάθη Στίξης",
-      pv: countSti,
-    },
-  ];
   const [dataBarOrth, setDataBarOrth] = useState([]);
   const [dataBarGram, setDataBarGram] = useState([]);
+  const [dataPie, setDataPie] = useState([]);
+
+  const getPieData = () => {
+    let temp_dataPie = [];
+    //dataPie=[];
+    fetch(`http://127.0.0.1:5000/mistakes/get_all`)
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
+        console.log("JSON", json_obj);
+        let orth = {
+          name: "Ορθογραφικά Λάθη",
+          count: json_obj[0].countS,
+        };
+        let gram = {
+          name: "Γραμματικά Λάθη",
+          count: json_obj[1].countG,
+        };
+        let sti = {
+          name: "Λάθη Στίξης",
+          count: json_obj[2].countSti,
+        };
+        temp_dataPie.push(orth);
+        temp_dataPie.push(gram);
+        temp_dataPie.push(sti);
+        setDataPie(temp_dataPie);
+        console.log(dataPie);
+      });
+  };
 
   const findWordsBarChar = (mistakes) => {
     if (mistakes.length != 0) {
@@ -63,56 +79,15 @@ const Charts = ({
       });
     }
   };
-  //Call it once when component mounts to create the database with 3 object-stores orth gram syntax
-  /*const create_DB = () => {
-    console.log("CREATE DB");
-    let openRequest = indexedDB.open("Mistakes", 1);
-    openRequest.onupgradeneeded = function () {
-      let db = openRequest.result;
-      //Each store object must a have a unique key set as the word itself
-      console.log("CREATE db success");
-      db.createObjectStore("Orth", { keyPath: "word" });
-      db.createObjectStore("Gram", { autoIncrement: true });
-      db.createObjectStore("Syntax", { autoIncrement: true });
-    };
-  };*/
-  /*------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
-  const Get_data = () => {
-    let temp_data = [];
-    let openRequest = indexedDB.open("Mistakes", 1);
-    openRequest.onsuccess = function () {
-      let db = openRequest.result;
-      let transaction = db.transaction("Orth", "readonly");
-      let orth_object_store = transaction.objectStore("Orth");
 
-      orth_object_store.getAll().onsuccess = function (e) {
-        let temp_arr = e.target.result;
-        //console.log("TempArr", temp_arr);
-        temp_arr.map((item) => {
-          let temp_item = {
-            name: item.word,
-            pv: item.count,
-            amt: 2210,
-          };
-          temp_data.push(temp_item);
-          //dataBarOrth.push(temp_item);
-        });
-        //Sort data
-        temp_data.sort(function (a, b) {
-          return b.pv - a.pv;
-        });
-        //Show the 5 most frequent
-        temp_data = temp_data.slice(0, 6);
-        setDataBarOrth(temp_data);
-        //return temp_data;
-      };
-    };
-  };
-*/
   const getGramData = () => {
     let temp_data = [];
     let type = "grammar";
-    fetch(`http://127.0.0.1:5000/mistakes/${type}`)
+    console.log("CHARTS");
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+    )
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -138,7 +113,11 @@ const Charts = ({
   const getOrthData = () => {
     let temp_data = [];
     let type = "spelling";
-    fetch(`http://127.0.0.1:5000/mistakes/${type}`)
+    console.log("CHARTS");
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+    )
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -165,6 +144,7 @@ const Charts = ({
     console.log("MISTAKE USEFFECT");
     getOrthData();
     getGramData();
+    getPieData();
   }, [mistakes]);
 
   return (
@@ -196,7 +176,7 @@ const Charts = ({
             className="piechart"
             data={dataPie}
             nameKey="name"
-            dataKey="pv"
+            dataKey="count"
             innerRadius="40%"
             outerRadius="80%"
             startAngle={90}

@@ -4,6 +4,7 @@ import InputText from "./InputText";
 import Modal from "react-modal";
 import essaypng from "../assets/essaypng.png";
 import Charts from "./Charts";
+import EssayCounter from "./EssayCounter";
 import uniqid from "uniqid";
 
 const customStyles = {
@@ -15,7 +16,15 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
+const ProfessorPage = ({
+  inputText,
+  setInputText,
+  getMistakes,
+  mistakes,
+  user,
+  setUser,
+  setRole,
+}) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
   const [countOrth, setcountOrth] = useState(0);
@@ -23,8 +32,7 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
   const [countSti, setcountSti] = useState(0);
   const [wordsOrth, setWordsOrth] = useState([]);
   const [wordsGram, setWordsGram] = useState([]);
-  const [user, setUser] = useState("");
-
+  const ROLE = "professor";
   function openAddNewEssayModal(e) {
     e.preventDefault();
     setIsOpen(true);
@@ -35,14 +43,16 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
   }
 
   const deleteMistakes = () => {
-    fetch(`http://127.0.0.1:5000/mistakes/delete_by_id/${user}`, {
-      method: "POST",
-    }).then((results) => console.log(results));
+    fetch(
+      `http://127.0.0.1:5000/mistakes/delete_by_id/id=/${user}/role=/${ROLE}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
   //Sends a POST request to our users api to insert new user into the DB
   const addUser = (id) => {
-    let role = "professor";
-    fetch(`http://127.0.0.1:5000/user/${role}/${id}`, {
+    fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };
@@ -51,22 +61,19 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
   //IF not it uses an external uniqid generator and sets the uniqid in local storage
   //then is uses the addUser function from above to insert the user into the users table
   useEffect(() => {
+    setRole("professor");
     let stored_id = localStorage.getItem("uniqid");
     if (stored_id) {
       setUser(stored_id);
-    } else {
-      let uniid = uniqid();
-      localStorage.setItem("uniqid", uniid);
-      addUser(uniid);
+      addUser(stored_id);
     }
   }, []);
-
+  console.log(user);
   return (
     <div className="return">
       <div className="title-wrapper">
-        <h1 className="title-prof">Professor</h1>
+        <h1 className="title-prof">Καθηγητής</h1>
       </div>
-
       <InputText
         setInputText={setInputText}
         getMistakes={getMistakes}
@@ -83,10 +90,9 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
         setWordsGram={setWordsGram}
         wordsGram={wordsGram}
         user={user}
+        role={ROLE}
       />
-      <button onClick={deleteMistakes} id="delete">
-        DELETE
-      </button>
+      <EssayCounter mistakes={mistakes} role={ROLE} />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeAddNewEssayModal}
@@ -166,6 +172,7 @@ const ProfessorPage = ({ inputText, setInputText, getMistakes, mistakes }) => {
         wordsGram={wordsGram}
         mistakes={mistakes}
         user={user}
+        role={ROLE}
       />
       <section className="essay-section">
         <Essays addEssay={openAddNewEssayModal} />

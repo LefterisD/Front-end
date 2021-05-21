@@ -17,6 +17,7 @@ const InputText = ({
   setWordsOrth,
   setWordsGram,
   user,
+  role,
 }) => {
   //const [textareaValue, setTextareaValue] = useState("");
   const [textAreaInput, setTextAreaInput] = useState("");
@@ -25,6 +26,7 @@ const InputText = ({
   const [tooltipReplacements, setTooltipReplacements] = useState([]);
   const [characters, setCharacters] = useState(0);
   const [wordCount, setWordCount] = useState(0);
+  const [currUser, setCurrUser] = useState("");
 
   let words = [];
   let tooltipMessage = "";
@@ -33,98 +35,19 @@ const InputText = ({
   let fakeWordsOrth = [];
   let fakeWordsGram = [];
 
-  /*
-    ------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-  ---------------------------------- IDB Start ---------------------*/
-  /*//Call it once when component mounts to create the database with 3 object-stores orth gram syntax
-  const create_DB = () => {
-    let openRequest = indexedDB.open("Mistakes", 1);
-    openRequest.onupgradeneeded = function () {
-      let db = openRequest.result;
-      //Each store object must a have a unique key set as the word itself
-      db.createObjectStore("Orth", { keyPath: "word" });
-      db.createObjectStore("Gram", { autoIncrement: true });
-      db.createObjectStore("Syntax", { autoIncrement: true });
-    };
-  };*/
-
-  /*const testFunction = () => {
-    fetch("http://127.0.0.1:5000/mistakes")
-      .then((res) => res.json())
-      .then((data) => {
-        let json_obj = JSON.parse(JSON.stringify(data));
-        console.log("DATABASE FROM API");
-        console.log(json_obj);
-      });
-  };*/
-  /*
-    ------------------------ THIS CODE IS FOR INDEXED DB DELETE IT BEFORE DEPLOYING THE APP
-    -
-    -
-    -
-    -
-    -
-    -
-    -
-  const Update_word_count = (word_to_update) => {
-    let openRequest = indexedDB.open("Mistakes", 1);
-    openRequest.onsuccess = function () {
-      let db = openRequest.result;
-      let transaction = db.transaction("Orth", "readwrite");
-      let orth_object_store = transaction.objectStore("Orth");
-      //Because the object store has for a key the word itself we can't have duplicate words in the table
-      //we provide the word as a key to retrieve the data for each mistake
-      //we update its count and put it back in the database
-      orth_object_store.getAll().onsuccess = function (event) {
-        let request = orth_object_store.get(word_to_update);
-        request.onsuccess = function (e) {
-          let data = e.target.result;
-          data.count = data.count + 1;
-          let requestUpdate = orth_object_store.put(data);
-          requestUpdate.onsuccess = function () {
-            console.log("Item count Updated");
-          };
-        };
-      };
-    };
-  };
-  //Takes a wrong word as an argument
-  //Makes a transaction to add the wrong word with its count=1 to the DB
-  //Adds a wrong word that does not exist in the db
-  //On-error means that the word is already in the DB and calls Update_word_count function to update its count
-  const Add_new_word = (word) => {
-    let openRequest = indexedDB.open("Mistakes", 2);
-    openRequest.onsuccess = function () {
-      let db = openRequest.result;
-      let transaction = db.transaction("Orth", "readwrite");
-      let orth = transaction.objectStore("Orth");
-      let temp_item = {
-        word: word,
-        count: 1,
-      };
-      let request = orth.add(temp_item);
-      request.onsuccess = function () {
-        console.log("Item added");
-      };
-      request.onerror = function () {
-        console.log("Error", request.error);
-        Update_word_count(word);
-      };
-    };
-  };
-
-  /*---------------------------------- IDB END ---------------------*/
-
   //Fetching the api to insert into the db or update a specific word count
-  const insert_to_database = (word, type) => {
-    fetch(`http://127.0.0.1:5000/mistakes/${user}/${type}/${word}`, {
+  const insert_to_database = (word, type, role) => {
+    console.log(type);
+    fetch(
+      `http://127.0.0.1:5000/role/${role}/id/${currUser}/type/${type}/word/${word}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+  };
+  //kossy wordCount
+  const insert_count = (wordCount) => {
+    fetch(`http://127.0.0.1:5000/mistakes/${wordCount}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };
@@ -151,8 +74,7 @@ const InputText = ({
           console.log("omoia", word);
           item.count = item.count + 1;
           counter = 1;
-          //Update_word_count(word);
-          insert_to_database(word, "spelling");
+          insert_to_database(word, "spelling", role);
         }
       });
       if (counter === 0) {
@@ -162,8 +84,7 @@ const InputText = ({
           count: 1,
         };
         fakeWordsOrth.push(newobject);
-        //Add_new_word(word);
-        insert_to_database(word, "spelling");
+        insert_to_database(word, "spelling", role);
       }
     } else {
       //console.log(" pinakas kenos");
@@ -172,8 +93,7 @@ const InputText = ({
         count: 1,
       };
       fakeWordsOrth.push(newobject);
-      //Add_new_word(word);
-      insert_to_database(word, "spelling");
+      insert_to_database(word, "spelling", role);
     }
   };
 
@@ -186,7 +106,7 @@ const InputText = ({
           //console.log("Yparxei idia leksi",item.word);
           item.count = item.count + 1;
           counter = 1;
-          insert_to_database(word, "grammar");
+          insert_to_database(word, "grammar", role);
         }
       });
       if (counter == 0) {
@@ -196,7 +116,7 @@ const InputText = ({
           count: 1,
         };
         fakeWordsGram.push(newobject);
-        insert_to_database(word, "grammar");
+        insert_to_database(word, "grammar", role);
       }
     } else {
       //console.log(" pinakas kenos");
@@ -205,7 +125,7 @@ const InputText = ({
         count: 1,
       };
       fakeWordsGram.push(newobject);
-      insert_to_database(word, "grammar");
+      insert_to_database(word, "grammar", role);
     }
   };
 
@@ -226,6 +146,7 @@ const InputText = ({
     ) {
       countSti++;
       setcountSti(countSti);
+      insert_to_database(word, "syntax", role);
     } else if (item.shortMessage == "Επανάληψη λέξης") {
       countGram++;
       setcountGram(countGram);
@@ -245,6 +166,9 @@ const InputText = ({
 
   // This functions finds all the mistakes (words) the user made and puts them in an array that then is returned to the highlight component to highlight the correspponding words
   const findWrongWords = (mistakes) => {
+    if (role === "professor") {
+      insert_count(wordCount);
+    }
     if (mistakes.length != 0) {
       let firstTime = 0;
       words = [];
@@ -273,6 +197,7 @@ const InputText = ({
     setcountSti(0);
     setWordsToHighlight(findWrongWords(mistakes));
     prepare_words_for_highlight();
+    setCurrUser(localStorage.getItem("uniqid"));
   }, [mistakes]);
 
   /*---------------------------------Toolip--------------------------------*/
@@ -395,10 +320,10 @@ const InputText = ({
           <div className="footer">
             <div className="word-count">
               <div className="words">
-                <span className="number-color">{wordCount}</span>:words
+                <span className="number-color">{wordCount}</span>:λέξεις
               </div>
               <div className="chars">
-                <span className="number-color">{characters}</span>:chars
+                <span className="number-color">{characters}</span>:χαρακτήρες
               </div>
             </div>
             <input

@@ -24,6 +24,8 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [mistakes, setMistakes] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [user, setUser] = useState("");
+  const [role, setRole] = useState("");
 
   const getMistakes = (e) => {
     e.preventDefault();
@@ -34,6 +36,18 @@ function App() {
         var json_obj = JSON.parse(JSON.stringify(data));
         setMistakes(json_obj.matches);
       });
+
+    update_essay_count();
+  };
+
+  const update_essay_count = () => {
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${role}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
 
   function openModal() {
@@ -47,6 +61,16 @@ function App() {
   function afterOpenModal() {
     subtitle.style.color = "#f00";
   }
+
+  useEffect(() => {
+    let stored_id = localStorage.getItem("uniqid");
+    if (stored_id) {
+      setUser(stored_id);
+    } else {
+      let uniid = uniqid();
+      localStorage.setItem("uniqid", uniid);
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -79,15 +103,13 @@ function App() {
               setInputText={setInputText}
               getMistakes={getMistakes}
               mistakes={mistakes}
+              user={user}
+              setUser={setUser}
+              setRole={setRole}
             />
           </Route>
           <Route path="/students">
-            <StudentPage
-              inputText={inputText}
-              setInputText={setInputText}
-              getMistakes={getMistakes}
-              mistakes={mistakes}
-            />
+            <StudentPage user={user} />
           </Route>
         </Switch>
       </Router>
