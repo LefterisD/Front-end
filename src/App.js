@@ -7,6 +7,7 @@ import Card from "./components/Card";
 import Navbar from "./components/Navbar";
 import ProfessorPage from "./components/ProfessorPage";
 import StudentPage from "./components/StudentPage";
+import NameForm from "./components/NameForm";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import uniqid from "uniqid";
 
@@ -26,7 +27,7 @@ function App() {
   const [inputText, setInputText] = useState("");
   const [user, setUser] = useState("");
   const [role, setRole] = useState("");
-
+  let nameForm;
   const getMistakes = (e) => {
     e.preventDefault();
 
@@ -72,6 +73,11 @@ function App() {
     }
   }, []);
 
+  if (localStorage.getItem("userName")) {
+    nameForm = <div></div>;
+  } else {
+    nameForm = <NameForm />;
+  }
   return (
     <div className="App">
       <Router>
@@ -86,6 +92,7 @@ function App() {
                   all around the world to help them find mistakes in essays.
                 </p>
               </div>
+              {nameForm}
               <div className="cards">
                 <Link to="/students" style={{ textDecoration: "none" }}>
                   <Card Svgicon={Student} Title={"For Students"} />

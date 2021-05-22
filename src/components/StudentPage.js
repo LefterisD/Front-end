@@ -13,7 +13,7 @@ const StudentPage = ({ user }) => {
   const [countSti, setcountSti] = useState(0);
   const [wordsOrth, setWordsOrth] = useState([]);
   const [wordsGram, setWordsGram] = useState([]);
-
+  const [userName, setUserName] = useState("");
   const [mistakesStudent, setMistakesStudent] = useState([]);
   const [inputTextStudent, setInputTextStudent] = useState("");
   const [studentUser, setStudentUser] = useState("");
@@ -67,10 +67,15 @@ const StudentPage = ({ user }) => {
     }
   }, []);
 
+  useEffect(() => {
+    let stored_userName = localStorage.getItem("userName");
+    setUserName(stored_userName);
+  }, []);
+
   return (
     <div className="return">
       <div className="title-wrapper">
-        <h1 className="title-prof">Student</h1>
+        <h1 className="title-prof">Καλώς όρισες {userName}</h1>
       </div>
       <InputText
         setInputText={setInputTextStudent}

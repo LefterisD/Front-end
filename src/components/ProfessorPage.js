@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import essaypng from "../assets/essaypng.png";
 import Charts from "./Charts";
 import EssayCounter from "./EssayCounter";
+import DataTable from "./DataTable";
 import uniqid from "uniqid";
 
 const customStyles = {
@@ -32,6 +33,7 @@ const ProfessorPage = ({
   const [countSti, setcountSti] = useState(0);
   const [wordsOrth, setWordsOrth] = useState([]);
   const [wordsGram, setWordsGram] = useState([]);
+  const [userName, setUserName] = useState("");
   const ROLE = "professor";
   function openAddNewEssayModal(e) {
     e.preventDefault();
@@ -68,11 +70,15 @@ const ProfessorPage = ({
       addUser(stored_id);
     }
   }, []);
-  console.log(user);
+
+  useEffect(() => {
+    let stored_userName = localStorage.getItem("userName");
+    setUserName(stored_userName);
+  }, []);
   return (
     <div className="return">
       <div className="title-wrapper">
-        <h1 className="title-prof">Καθηγητής</h1>
+        <h1 className="title-prof">Καλώς όρισατε κ.{userName}</h1>
       </div>
       <InputText
         setInputText={setInputText}
@@ -161,7 +167,7 @@ const ProfessorPage = ({
       <div className="chart-section-title">
         <h1 className="title-chart">
           <span id="chart-span">Παρακάτω, </span> θα βρείτε στατιστικά για τα
-          λάθη.{" "}
+          λάθη.
         </h1>
       </div>
       <Charts
@@ -175,21 +181,16 @@ const ProfessorPage = ({
         role={ROLE}
       />
       <section className="essay-section">
-        <Essays addEssay={openAddNewEssayModal} />
-        <div className="essay-info">
-          <div className="essay-img-wrapper">
-            <img src={essaypng} alt="Search-read-share" />
-          </div>
-          <h1>
-            Search<span className="dot">. </span>
-            Read<span className="dot">. </span>
-            Share<span className="dot">. </span>
-          </h1>
-          <p className="essay-info-p">
-            Discover essay topics other professors assign their students and
-            share your own.
+        <div id="essay-details">
+          <h1 id="essay-header">Πληροφορίες για τις εκθέσεις</h1>
+          <p>
+            Παρακάτω εμφανίζονται στον πίνακα οι εκθέσεις που έχουν ελεγχθεί.
+            Πιο συγκεκριμένα θα βρείτε πληροφορίες για τον βαθμό της έκθεσης,
+            τον αριθμό των λαθών καθώς και των λέξεων.{" "}
           </p>
         </div>
+
+        <DataTable role={ROLE} />
       </section>
     </div>
   );

@@ -15,7 +15,6 @@ const EssayCounter = ({ mistakes, role }) => {
         let json_obj = JSON.parse(JSON.stringify(data));
         setCounter(json_obj[0].essayCount);
         if (json_obj[0].essayCount >= 5) {
-          console.log("SDSDAHJGSAJHDASGJHDGSAHJ");
           getWordCount();
         }
       });
@@ -26,7 +25,6 @@ const EssayCounter = ({ mistakes, role }) => {
     fetch(`http://127.0.0.1:5000/getTotalWords`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("BHKAAAAAAAAAAAAAAA");
         let json_obj = JSON.parse(JSON.stringify(data));
         setTotalWords(json_obj[0].averageWords);
         let temp_total_average = Math.floor(json_obj[0].averageWords / counter);
