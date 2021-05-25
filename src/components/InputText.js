@@ -18,6 +18,10 @@ const InputText = ({
   setWordsGram,
   user,
   role,
+  setOrthStats,
+  setGramStats,
+  setStiStats,
+  setGrade,
 }) => {
   //const [textareaValue, setTextareaValue] = useState("");
   const [textAreaInput, setTextAreaInput] = useState("");
@@ -95,6 +99,7 @@ const InputText = ({
       fakeWordsOrth.push(newobject);
       insert_to_database(word, "spelling", role);
     }
+    setWordsOrth(fakeWordsOrth);
   };
 
   const setGramWords = (word) => {
@@ -109,7 +114,7 @@ const InputText = ({
           insert_to_database(word, "grammar", role);
         }
       });
-      if (counter == 0) {
+      if (counter === 0) {
         // console.log("DEn Yparxei i leksi")
         let newobject = {
           word: word,
@@ -127,6 +132,7 @@ const InputText = ({
       fakeWordsGram.push(newobject);
       insert_to_database(word, "grammar", role);
     }
+    setWordsGram(fakeWordsGram);
   };
 
   //count mistakes for charts
@@ -163,6 +169,23 @@ const InputText = ({
     let word1 = sentence.slice(offset, offset + length);
     return word1;
   };
+  //update essay table
+  const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
+    console.log("ROLE", role);
+    console.log("USER", currUser);
+    fetch(
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${currUser}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+  };
+
+  //compute grade
+  const computeErrorPercentage = (wordCount, errors) => {
+    let count_1 = wordCount - errors;
+    return count_1 / wordCount;
+  };
 
   // This functions finds all the mistakes (words) the user made and puts them in an array that then is returned to the highlight component to highlight the correspponding words
   const findWrongWords = (mistakes) => {
@@ -178,10 +201,39 @@ const InputText = ({
         firstTime = 1;
         words.push(word);
       });
+      //Essay grading
+
+      let orthPercentage = computeErrorPercentage(wordCount, countOrth);
+      let gramPercentage = computeErrorPercentage(wordCount, countGram);
+      let stiPercentage = computeErrorPercentage(wordCount, countSti);
+      if (role == "student") {
+        setOrthStats(orthPercentage);
+        setGramStats(gramPercentage);
+        setStiStats(stiPercentage);
+      }
+
+      let grade =
+        9 * orthPercentage + 0.5 * gramPercentage + 0.5 * stiPercentage;
+      grade = Math.round(grade * 10) / 10;
+      setGrade(grade);
+      addEssay(countOrth, countGram, countSti, wordCount, grade);
+      //------------
       setWordsOrth(fakeWordsOrth);
       setWordsGram(fakeWordsGram);
       return words;
     } else {
+      //If no mistakes are found
+      if (role && currUser) {
+        if (role == "student") {
+          let orthPercentage = computeErrorPercentage(wordCount, countOrth);
+          let gramPercentage = computeErrorPercentage(wordCount, countGram);
+          let stiPercentage = computeErrorPercentage(wordCount, countSti);
+          setOrthStats(orthPercentage);
+          setGramStats(gramPercentage);
+          setStiStats(stiPercentage);
+        }
+        addEssay(0, 0, 0, wordCount, 10);
+      }
       // if mistakes array is empty use a placeholder for the words
       words = [];
       words.push(["placeholder"]);

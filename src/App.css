@@ -569,7 +569,7 @@
     align-items: center;
 }
 
-form {
+.text-box-check form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -862,17 +862,37 @@ mark {
 
 .section {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    margin-bottom: 100px;
-    margin-top: 150px;
     width: 100%;
+}
+.section h3 {
+    color: #243665;
+}
+.chart_section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.charts {
+    width:35%;
+}
+.chart-title {
+    margin-bottom: 2rem;
 }
 
 .donut {
-    margin-bottom: 50px;
+    margin-bottom: 3rem ;
+}
+.bar {
+    margin-bottom: 3rem;
 }
 
+#first-chart-box{
+    height: 80rem;
+    border-right: 3px solid #7c7c7c23;
+}
 
 /*------------------------ essay section ----------------*/
 
@@ -1002,26 +1022,57 @@ mark {
 }
 
 .title-chart {
-    color: #8bd8bd;
-    font-size: 35px;
-    letter-spacing: 4px;
+    color: #243665;
+    font-size: 25px;
+    letter-spacing: 3px;
     font-style: italic;
 }
 
 #chart-span {
-    color: #243665;
+    color: #8bd8bd;
 }
 
 .chart-section-title {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 10000000000;
     position: relative;
     font-size: 30px;
     margin-bottom: 50px;
+}
+.delete-content {
+    width: 100%;
+    padding-left: 6rem;
+}
+#sec-title{
+    margin-bottom: 58px;
+}
+.chart-section-title p {
+    color: #243665;
+    font-size: initial;
+    font-style: italic;
+    font-weight: bolder;
+    margin-bottom: -5px;
+}
+.chart-section-title button {
+    background-color: #8bd8bd;
+    padding: 3px 6px;
+    margin-right: 20px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+    z-index: 10;
+}
+.chart-section-title button:hover {
+    transform: translateY(-0.1rem);
+    box-shadow: 0 0 0.4rem rgb(0, 0, 0, 0.2);
 }
 
 .yellow {
@@ -1145,7 +1196,7 @@ mark {
 /* -------------------------- ESSAY COUNTER ----------------- */
 
 .counter-wrapper {
-    box-shadow: 0 2px 25px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
     display: inline-block !important;
     border-radius: 8px;
     padding: 20px 25px;
@@ -1300,4 +1351,280 @@ mark {
 .input-field:not(:placeholder-shown).input-field:not(:focus)+label {
     top: -2.3rem;
     left: -1rem;
+}
+
+
+/* -------------------------------- More info box ------------------------------*/
+
+.info_wrapper {
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    background-color: #fff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 20rem;
+    padding: 15px 0px;
+    border-radius: 5px;
+    cursor: pointer;
+    animation-name: animate;
+    animation-duration: .7s;
+    animation-delay: 1s;
+    animation-timing-function: cubic-bezier(.51,.92,.24,1.15);
+    animation-fill-mode: forwards;
+    position: absolute;
+    opacity: 0;
+    top: 330px;
+    left: 10px;
+}
+
+.info_wrapper:hover {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+}
+
+#acc-info {
+    color: var(--text-color);
+    
+    margin-left: 1.5rem;
+}
+
+#info-icon {
+    color: #8bd8bd;
+    margin-left: 1.5rem;
+    font-size: 27px;
+}
+
+@keyframes animate {
+    0% {
+        left: -500px;
+        opacity: 1;
+    }
+    100%{
+        left: 10px;
+        opacity: 1;
+    }
+}
+
+/*--------------------------------------Student_info_modal----------------------*/
+
+.student_info_modal{
+    width: 500px;
+    height: 500px;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 100000000000000000000000 !important;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    border: none;
+    outline: none;
+}
+
+.ReactModal__Overlay--after-open {
+    z-index: 100000000000000;
+    background-color: #fff;
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.ReactModal__Overlay {
+    background: rgba(0, 0, 0, 0.5) !important;
+    opacity: 1;
+    transform: translateY(-100px);
+    transform: scale(1);
+    transition: all .3s ease-in-out;
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+    transform: translateY(0px);
+}
+
+.student_info_modal header{
+    width: 100%;
+    position: absolute;
+    padding: 10px;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.student_info_modal header button {
+    background: transparent;
+    outline: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.student_info_modal .container-box .title h1 {
+    margin-top: 0rem;
+}
+
+.student_info_modal .container-box  {
+    height: 100%;
+}
+
+.student_info_modal .title {
+    height: 20%;
+}
+
+.student_info_modal .container-box .main-section {
+    height: 80%;
+    padding: 10px 30px;
+    margin-top: 2rem;
+}
+
+.student_info_modal .container-box .main-section .input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input{
+    width: 100%;
+    padding-top: 20px ;
+    padding-bottom: 5px ;
+    padding-left: 5px ;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid var(--text-color);
+    transition: all .5s ;
+    margin-bottom: 2rem;
+}
+
+.input-wrapper input:focus{
+    border-bottom: 2px solid #19547b;
+}
+
+.input-wrapper label {
+    position: absolute;
+    top: 15px;
+    left: 5px;
+    color: var(--text-color);
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.input-wrapper input:not(:placeholder-shown) .input-wrapper.input:not(:focus)+label {
+    top: -10px;
+    left: 0px;
+    color: #19547b;
+}
+
+.input-wrapper input:not([value=""]):not(:focus):invalid+label{
+    top: -10px;
+    left: 0px;
+    color: #19547b;
+  }
+
+.input-wrapper input:focus+label{
+    top: -10px;
+    left: 0px;
+    color: #19547b;
+}
+
+#sbmt_btn{
+    background-color: #8bd8bd;
+    padding: 3px 6px;
+    margin-right: 20px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+    z-index: 10;
+    margin:0 auto;
+    display:block;
+}
+#sbmt_btn:hover {
+    transform: translateY(-0.1rem);
+    box-shadow: 0 0 0.4rem rgb(0, 0, 0, 0.2);
+}
+#info-form{
+    height: 100%;
+}
+
+.input-wrapper #id, .input-wrapper #role {
+    display: none;
+}
+
+/*----------------------------------Grade box ----------------------------------*/
+.grade_box{
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    position: absolute;
+    top:400px;
+    right: 20px;
+    z-index: 10 !important;
+    background-color: #fff;
+}
+
+.grade_chart{
+    position: relative;
+    width: 100%;
+    height: 50%;
+    margin-bottom: -2rem;
+}
+#pie-grade{
+    margin-top: 2rem;
+}
+.grade-text{
+    position: absolute;
+    top: 95px;
+    left: 170px;
+    font-size: 25px;
+    color:  #8bd8bd;
+}
+
+#grade-span{
+    color: #243665;
+}
+
+.content_feedback{
+    border-top: 2px solid rgba(128, 128, 128, 0.088);
+    width: 100%;
+    height: 50%;
+    padding-top: .5rem;
+}
+.content_feedback #title{
+    font-size: 18px;
+    
+    padding-left: 0.8rem;
+    color: #243665;
+}
+
+.comments {
+    font-size: 15px;
+    padding: 1.2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.comments .comment{
+    margin-bottom: .5rem;
+    color: var(--text-color);
+    position: relative;
+}
+.comment-wrapper{
+    position: relative;
+}
+.comments .comment::before {
+    background: #8bd8bd;
+    content: "";
+    height: 8px;
+    width: 8px;
+    margin-left: 1%;
+    border-radius: 50%;
+    position: absolute;
+    left: -20px;
+    top: 5px;
 }

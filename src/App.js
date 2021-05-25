@@ -27,7 +27,13 @@ function App() {
   const [inputText, setInputText] = useState("");
   const [user, setUser] = useState("");
   const [role, setRole] = useState("");
+  const [change, setChange] = useState(false);
   let nameForm;
+  const STUDENT_TEXT =
+    "Είσαι μαθητής; Χρησιμοποίησε την εφαρμογή 'Για μαθητές' ώστε να ελέγξεις τις εκθέσεις σου. ";
+  const PROFESSOR_TEXT =
+    "Είσαι καθηγητής; Χρησιμοποίησε την εφαρμογή 'Για καθηγητές' ώστε να ελέγξεις τις εκθέσεις των μαθητών σου. ";
+
   const getMistakes = (e) => {
     e.preventDefault();
 
@@ -39,6 +45,7 @@ function App() {
       });
 
     update_essay_count();
+    setChange(!change);
   };
 
   const update_essay_count = () => {
@@ -88,17 +95,26 @@ function App() {
               <div className="jumbo">
                 <h1> CheckIt </h1>
                 <p>
-                  Welcome to CheckIt, a web tool used by students and professors
-                  all around the world to help them find mistakes in essays.
+                  Το CheckIt είναι μια web εφαρμογή ελέγχου και βαθμολόγησης
+                  εκθέσεων που χρησιμοποιείται από καθηγητές και μαθητές σε όλη
+                  την Ελλάδα.
                 </p>
               </div>
               {nameForm}
               <div className="cards">
                 <Link to="/students" style={{ textDecoration: "none" }}>
-                  <Card Svgicon={Student} Title={"For Students"} />
+                  <Card
+                    Svgicon={Student}
+                    Title={"Για Μαθητές"}
+                    text={STUDENT_TEXT}
+                  />
                 </Link>
                 <Link to="/professors" style={{ textDecoration: "none" }}>
-                  <Card Svgicon={Professor} Title={"For Professors"} />
+                  <Card
+                    Svgicon={Professor}
+                    Title={"Για Καθηγητές"}
+                    text={PROFESSOR_TEXT}
+                  />
                 </Link>
               </div>
             </div>
@@ -113,10 +129,11 @@ function App() {
               user={user}
               setUser={setUser}
               setRole={setRole}
+              change={change}
             />
           </Route>
           <Route path="/students">
-            <StudentPage user={user} />
+            <StudentPage user={user} change={change} />
           </Route>
         </Switch>
       </Router>

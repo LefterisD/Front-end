@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import InputText from "./InputText";
 import EssayCounter from "./EssayCounter";
+import MoreInfo from "./MoreInfo";
 import Charts from "./Charts";
+import ChartOne from "./ChartOne";
 import uniqid from "uniqid";
+import FeedBack from "./FeedBack";
+import Grade from "./Grade";
 
-const StudentPage = ({ user }) => {
+const StudentPage = ({ user, change }) => {
   const [wordsToHighlightStudent, setWordsToHighlightStudent] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -17,6 +21,15 @@ const StudentPage = ({ user }) => {
   const [mistakesStudent, setMistakesStudent] = useState([]);
   const [inputTextStudent, setInputTextStudent] = useState("");
   const [studentUser, setStudentUser] = useState("");
+  const [userFilledInfo, setUserFilledInfo] = useState("");
+
+  const [orthStats, setOrthStats] = useState(0);
+  const [gramStats, setGramStats] = useState(0);
+  const [stiStats, setStiStats] = useState(0);
+
+  //feedback
+
+  const [grade, setGrade] = useState(0);
 
   const ROLE = "student";
   const getMistakesStudent = (e) => {
@@ -48,6 +61,17 @@ const StudentPage = ({ user }) => {
       method: "POST",
     }).then((results) => console.log(results));
   };
+  //Delete all mistakes from database
+  const clear_data = () => {
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+    window.location.reload();
+  };
 
   useEffect(() => {
     let stored_id = localStorage.getItem("uniqid");
@@ -70,6 +94,13 @@ const StudentPage = ({ user }) => {
   useEffect(() => {
     let stored_userName = localStorage.getItem("userName");
     setUserName(stored_userName);
+    let info = localStorage.getItem("info");
+    if (localStorage.getItem("info")) {
+      setUserFilledInfo(info);
+    } else {
+      localStorage.setItem("info", "none");
+      setUserFilledInfo(localStorage.getItem("info"));
+    }
   }, []);
 
   return (
@@ -94,24 +125,64 @@ const StudentPage = ({ user }) => {
         wordsGram={wordsGram}
         user={user}
         role={ROLE}
+        setOrthStats={setOrthStats}
+        setGramStats={setGramStats}
+        setStiStats={setStiStats}
+        setGrade={setGrade}
       />
-      <EssayCounter mistakes={mistakesStudent} role={ROLE} />
-      <div className="chart-section-title">
-        <h1 className="title-chart">
-          <span id="chart-span">Παρακάτω, </span> θα βρείτε στατιστικά για τα
-          λάθη.{" "}
-        </h1>
-      </div>
-      <Charts
-        countOrth={countOrth}
-        countGram={countGram}
-        countSti={countSti}
-        wordsOrth={wordsOrth}
-        wordsGram={wordsGram}
+
+      <Grade
+        orthStats={orthStats}
+        gramStats={gramStats}
+        stiStats={stiStats}
         mistakes={mistakesStudent}
-        user={user}
+        grade={grade}
         role={ROLE}
+        user={user}
       />
+      <MoreInfo info={userFilledInfo} role={ROLE} />
+      <div className="chart_section">
+        <div className="charts">
+          <div className="chart-section-title">
+            <h2 className="title-chart">
+              Συνολικά στατιστικά <span id="chart-span">X </span>
+              εκθέσεων
+            </h2>
+            <div className="delete-content">
+              <p>Διαγραφή δεδομένων</p>
+              <button onClick={clear_data}>Διαγραφή</button>
+            </div>
+          </div>
+          <Charts
+            countOrth={countOrth}
+            countGram={countGram}
+            countSti={countSti}
+            wordsOrth={wordsOrth}
+            wordsGram={wordsGram}
+            mistakes={mistakesStudent}
+            user={user}
+            role={ROLE}
+          />
+        </div>
+        <div className="charts">
+          <div className="chart-section-title">
+            <h2 className="title-chart" id="sec-title">
+              Στατιστικά μιας έκθεσης
+            </h2>
+          </div>
+          <ChartOne
+            countOrth={countOrth}
+            countGram={countGram}
+            countSti={countSti}
+            wordsOrth={wordsOrth}
+            wordsGram={wordsGram}
+            mistakes={mistakesStudent}
+            user={user}
+            role={ROLE}
+            change={change}
+          />
+        </div>
+      </div>
     </div>
   );
 };

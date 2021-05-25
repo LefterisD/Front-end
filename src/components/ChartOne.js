@@ -23,41 +23,34 @@ const Charts = ({
   mistakes,
   user,
   role,
+  change,
 }) => {
   const [dataBarOrth, setDataBarOrth] = useState([]);
   const [dataBarGram, setDataBarGram] = useState([]);
   const [dataPie, setDataPie] = useState([]);
+  //let dataBarOrth = [];
 
-  const getPieData = () => {
-    let temp_dataPie = [];
-    //dataPie=[];
-    fetch(`http://127.0.0.1:5000/mistakes/get_all`)
-      .then((res) => res.json())
-      .then((data) => {
-        let json_obj = JSON.parse(JSON.stringify(data));
-        let orth = {
-          name: "Ορθογραφικά Λάθη",
-          count: json_obj[0].countS,
-        };
-        let gram = {
-          name: "Γραμματικά Λάθη",
-          count: json_obj[1].countG,
-        };
-        let sti = {
-          name: "Λάθη Στίξης",
-          count: json_obj[2].countSti,
-        };
-        temp_dataPie.push(orth);
-        temp_dataPie.push(gram);
-        temp_dataPie.push(sti);
-        setDataPie(temp_dataPie);
-      });
-  };
+  /*const dataPie = [
+    {
+      name: "Ορθογραφικά Λάθη",
+      pv: countOrth,
+    },
+    {
+      name: "Λάθη Γραμματικης",
+      pv: countGram,
+    },
+    {
+      name: "Λάθη Στίξης",
+      pv: countSti,
+    },
+  ];*/
 
   const findWordsBarChar = (mistakes) => {
+    let temp_dataBarOrth = [];
+    let temp_dataBarGram = [];
     if (mistakes.length != 0) {
       //taksinomisi
-      wordsGram.sort(function (a, b) {
+      wordsOrth.sort(function (a, b) {
         return b.count - a.count;
       });
     }
@@ -72,75 +65,74 @@ const Charts = ({
             count: word.count,
             amt: 2210,
           };
-          dataBarGram.push(newBarElement);
+          temp_dataBarGram.push(newBarElement);
         }
       });
+      setDataBarGram(temp_dataBarGram);
+    }
+    if (mistakes.length != 0) {
+      let counter = 0;
+      wordsOrth.map((word) => {
+        if (counter < 5) {
+          counter++;
+          let newBarElement = {
+            name: word.word,
+            count: word.count,
+            amt: 2210,
+          };
+          temp_dataBarOrth.push(newBarElement);
+        }
+      });
+      setDataBarOrth(temp_dataBarOrth);
     }
   };
 
-  const getGramData = () => {
-    let temp_data = [];
-    let type = "grammar";
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        let json_obj = JSON.parse(JSON.stringify(data));
-
-        json_obj.map((item) => {
-          let temp_item = {
-            name: item.word,
-            count: item.count,
-            amt: 2210,
-          };
-          temp_data.push(temp_item);
-        });
-        //Sort data
-        temp_data.sort(function (a, b) {
-          return b.count - a.count;
-        });
-        //Show the 5 most frequent
-        temp_data = temp_data.slice(0, 6);
-        setDataBarGram(temp_data);
-      });
+  const findPieData = (mistakes) => {
+    let pieData2 = [];
+    if (mistakes.length != 0) {
+      console.log("charts", wordsOrth);
+      pieData2 = [];
+      pieData2.push(
+        {
+          name: "Ορθογραφικά Λάθη",
+          count: countOrth,
+        },
+        {
+          name: "Λάθη Γραμματικης",
+          count: countGram,
+        },
+        {
+          name: "Λάθη Στίξης",
+          count: countSti,
+        }
+      );
+      setDataPie(pieData2);
+      //return pieData2;
+    } else {
+      pieData2 = [
+        {
+          name: "Λάθη Γραμματικης",
+          count: 0,
+        },
+        {
+          name: "Ορθογραφικά Λάθη",
+          count: 0,
+        },
+        {
+          name: "Λάθη Στίξης",
+          count: 0,
+        },
+      ];
+      setDataPie(pieData2);
+      //return pieData2;
+    }
   };
-
-  const getOrthData = () => {
-    let temp_data = [];
-    let type = "spelling";
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        let json_obj = JSON.parse(JSON.stringify(data));
-
-        json_obj.map((item) => {
-          let temp_item = {
-            name: item.word,
-            count: item.count,
-            amt: 2210,
-          };
-          temp_data.push(temp_item);
-        });
-        //Sort data
-        temp_data.sort(function (a, b) {
-          return b.count - a.count;
-        });
-        //Show the 5 most frequent
-        temp_data = temp_data.slice(0, 6);
-        setDataBarOrth(temp_data);
-      });
-  };
-
+  console.log("CHANGE----", change);
   useEffect(() => {
-    getOrthData();
-    getGramData();
-    getPieData();
-  }, [wordsOrth, wordsGram, mistakes]);
+    findPieData(mistakes);
+    console.log("DATAPIE", dataPie);
+    findWordsBarChar(mistakes);
+  }, [wordsOrth, wordsGram]);
 
   return (
     <div className="section">

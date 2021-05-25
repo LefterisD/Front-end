@@ -13,8 +13,20 @@ const columns = [
   { id: "essay", label: "Έκθεση", minWidth: 170 },
   { id: "num_words", label: "Αριθμός λέξεων", minWidth: 100 },
   {
-    id: "num_errors",
-    label: "Αριθμός λαθών",
+    id: "num_spelling",
+    label: "Αριθμός Ορθογραφικών λαθών",
+    minWidth: 170,
+    align: "right",
+  },
+  {
+    id: "num_grammar",
+    label: "Αριθμός Γραμματικών λαθών",
+    minWidth: 170,
+    align: "right",
+  },
+  {
+    id: "num_punctuation",
+    label: "Αριθμός λαθών στίξης",
     minWidth: 170,
     align: "right",
   },
@@ -26,8 +38,22 @@ const columns = [
   },
 ];
 
-function createData(essay, num_words, num_errors, grade) {
-  return { essay, num_words, num_errors, grade };
+function createData(
+  essay,
+  num_words,
+  num_spelling,
+  num_grammar,
+  num_punctuation,
+  grade
+) {
+  return {
+    essay,
+    num_words,
+    num_spelling,
+    num_grammar,
+    num_punctuation,
+    grade,
+  };
 }
 
 const useStyles = makeStyles({
@@ -39,7 +65,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataTable({ role }) {
+export default function DataTable({ role, mistakes }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -66,7 +92,9 @@ export default function DataTable({ role }) {
             createData(
               essay.essay,
               essay.num_words,
-              essay.num_mistakes,
+              essay.num_spelling,
+              essay.num_grammar,
+              essay.num_punctuation,
               essay.grade
             )
           );
@@ -80,6 +108,11 @@ export default function DataTable({ role }) {
     //API CALL TO GET THE DATA
     getEssayData();
   }, []);
+
+  useEffect(() => {
+    //API CALL TO GET THE DATA
+    getEssayData();
+  }, [mistakes]);
 
   return (
     <Paper className={classes.root} id="datatableid">

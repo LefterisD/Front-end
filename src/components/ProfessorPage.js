@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Essays from "./Essays";
+import React, { useState, useEffect, useRef } from "react";
 import InputText from "./InputText";
 import Modal from "react-modal";
-import essaypng from "../assets/essaypng.png";
 import Charts from "./Charts";
 import EssayCounter from "./EssayCounter";
 import DataTable from "./DataTable";
-import uniqid from "uniqid";
+import ChartOne from "./ChartOne";
 
 const customStyles = {
   overlay: {
@@ -25,6 +23,7 @@ const ProfessorPage = ({
   user,
   setUser,
   setRole,
+  change,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -34,7 +33,11 @@ const ProfessorPage = ({
   const [wordsOrth, setWordsOrth] = useState([]);
   const [wordsGram, setWordsGram] = useState([]);
   const [userName, setUserName] = useState("");
+  const [essayNum, setEssayNum] = useState(0);
+  const [grade, setGrade] = useState(0);
+
   const ROLE = "professor";
+
   function openAddNewEssayModal(e) {
     e.preventDefault();
     setIsOpen(true);
@@ -57,6 +60,17 @@ const ProfessorPage = ({
     fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
+  };
+
+  const clear_data = () => {
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+    window.location.reload();
   };
 
   //Checks if local storage uniqid EXISTS and sets the global userid state to the stored id
@@ -97,8 +111,9 @@ const ProfessorPage = ({
         wordsGram={wordsGram}
         user={user}
         role={ROLE}
+        setGrade={setGrade}
       />
-      <EssayCounter mistakes={mistakes} role={ROLE} />
+      <EssayCounter mistakes={mistakes} role={ROLE} setEssayNum={setEssayNum} />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeAddNewEssayModal}
@@ -164,22 +179,48 @@ const ProfessorPage = ({
           </div>
         </div>
       </Modal>
-      <div className="chart-section-title">
-        <h1 className="title-chart">
-          <span id="chart-span">Παρακάτω, </span> θα βρείτε στατιστικά για τα
-          λάθη.
-        </h1>
+      <div className="chart_section">
+        <div className="charts">
+          <div className="chart-section-title">
+            <h2 className="title-chart">
+              Συνολικά στατιστικά <span id="chart-span">{essayNum} </span>
+              εκθέσεων
+            </h2>
+            <div className="delete-content">
+              <p>Διαγραφή δεδομένων</p>
+              <button onClick={clear_data}>Διαγραφή</button>
+            </div>
+          </div>
+          <Charts
+            countOrth={countOrth}
+            countGram={countGram}
+            countSti={countSti}
+            wordsOrth={wordsOrth}
+            wordsGram={wordsGram}
+            mistakes={mistakes}
+            user={user}
+            role={ROLE}
+          />
+        </div>
+        <div className="charts">
+          <div className="chart-section-title">
+            <h2 className="title-chart" id="sec-title">
+              Στατιστικά μιας έκθεσης
+            </h2>
+          </div>
+          <ChartOne
+            countOrth={countOrth}
+            countGram={countGram}
+            countSti={countSti}
+            wordsOrth={wordsOrth}
+            wordsGram={wordsGram}
+            mistakes={mistakes}
+            user={user}
+            role={ROLE}
+            change={change}
+          />
+        </div>
       </div>
-      <Charts
-        countOrth={countOrth}
-        countGram={countGram}
-        countSti={countSti}
-        wordsOrth={wordsOrth}
-        wordsGram={wordsGram}
-        mistakes={mistakes}
-        user={user}
-        role={ROLE}
-      />
       <section className="essay-section">
         <div id="essay-details">
           <h1 id="essay-header">Πληροφορίες για τις εκθέσεις</h1>
@@ -190,7 +231,7 @@ const ProfessorPage = ({
           </p>
         </div>
 
-        <DataTable role={ROLE} />
+        <DataTable role={ROLE} mistakes={mistakes} />
       </section>
     </div>
   );
