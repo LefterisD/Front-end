@@ -23,9 +23,9 @@ const StudentPage = ({ user, change }) => {
   const [studentUser, setStudentUser] = useState("");
   const [userFilledInfo, setUserFilledInfo] = useState("");
 
-  const [orthStats, setOrthStats] = useState(0);
-  const [gramStats, setGramStats] = useState(0);
-  const [stiStats, setStiStats] = useState(0);
+  const [wordCountStu, setWordCountStu] = useState(0);
+  const [wordCountProf, setWordCountProf] = useState(0);
+  const [flag, setFlag] = useState(false);
 
   //feedback
 
@@ -114,31 +114,27 @@ const StudentPage = ({ user, change }) => {
         mistakes={mistakesStudent}
         setWordsToHighlight={setWordsToHighlightStudent}
         setcountOrth={setcountOrth}
-        countOrth={countOrth}
         setcountGram={setcountGram}
-        countGram={countGram}
         setcountSti={setcountSti}
-        countSti={countSti}
         setWordsOrth={setWordsOrth}
-        wordsOrth={wordsOrth}
         setWordsGram={setWordsGram}
         wordsGram={wordsGram}
-        user={user}
         role={ROLE}
-        setOrthStats={setOrthStats}
-        setGramStats={setGramStats}
-        setStiStats={setStiStats}
-        setGrade={setGrade}
+        setWordCountProf={setWordCountProf}
+        setWordCountStu={setWordCountStu}
       />
 
       <Grade
-        orthStats={orthStats}
-        gramStats={gramStats}
-        stiStats={stiStats}
         mistakes={mistakesStudent}
-        grade={grade}
         role={ROLE}
         user={user}
+        wordCountStu={wordCountStu}
+        flag={flag}
+        countOrth={countOrth}
+        countGram={countGram}
+        countSti={countSti}
+        setFlag={setFlag}
+        wordsOrth={wordsOrth}
       />
       <MoreInfo info={userFilledInfo} role={ROLE} />
       <div className="chart_section">

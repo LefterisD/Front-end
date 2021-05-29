@@ -65,7 +65,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataTable({ role, mistakes }) {
+export default function DataTable({ role, mistakes, wordsOrth }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -82,7 +82,8 @@ export default function DataTable({ role, mistakes }) {
 
   const getEssayData = () => {
     let temp_data = [];
-    fetch("http://127.0.0.1:5000/essays/all")
+    let user_id = localStorage.getItem("uniqid");
+    fetch(`http://127.0.0.1:5000/essays/all/role/${role}/id/${user_id}`)
       .then((res) => res.json())
       .then((essays) => {
         let essay_data = JSON.parse(JSON.stringify(essays));
@@ -112,7 +113,7 @@ export default function DataTable({ role, mistakes }) {
   useEffect(() => {
     //API CALL TO GET THE DATA
     getEssayData();
-  }, [mistakes]);
+  }, [wordsOrth]);
 
   return (
     <Paper className={classes.root} id="datatableid">

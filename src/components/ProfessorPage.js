@@ -5,6 +5,7 @@ import Charts from "./Charts";
 import EssayCounter from "./EssayCounter";
 import DataTable from "./DataTable";
 import ChartOne from "./ChartOne";
+import ProfGrade from "./ProfGrade";
 
 const customStyles = {
   overlay: {
@@ -35,6 +36,10 @@ const ProfessorPage = ({
   const [userName, setUserName] = useState("");
   const [essayNum, setEssayNum] = useState(0);
   const [grade, setGrade] = useState(0);
+  const [storedID, setStoredID] = useState("");
+  const [wordCountProf, setWordCountProf] = useState(0);
+  const [wordCountStu, setWordCountStu] = useState(0);
+  const [flag, setFlag] = useState(false);
 
   const ROLE = "professor";
 
@@ -79,6 +84,7 @@ const ProfessorPage = ({
   useEffect(() => {
     setRole("professor");
     let stored_id = localStorage.getItem("uniqid");
+    setStoredID(stored_id);
     if (stored_id) {
       setUser(stored_id);
       addUser(stored_id);
@@ -100,18 +106,25 @@ const ProfessorPage = ({
         mistakes={mistakes}
         setWordsToHighlight={setWordsToHighlight}
         setcountOrth={setcountOrth}
-        countOrth={countOrth}
         setcountGram={setcountGram}
-        countGram={countGram}
         setcountSti={setcountSti}
-        countSti={countSti}
         setWordsOrth={setWordsOrth}
-        wordsOrth={wordsOrth}
         setWordsGram={setWordsGram}
-        wordsGram={wordsGram}
-        user={user}
         role={ROLE}
-        setGrade={setGrade}
+        setWordCountProf={setWordCountProf}
+        setWordCountStu={setWordCountStu}
+      />
+      <ProfGrade
+        mistakes={mistakes}
+        wordCountProf={wordCountProf}
+        role={ROLE}
+        user={storedID}
+        flag={flag}
+        countOrth={countOrth}
+        countGram={countGram}
+        countSti={countSti}
+        setFlag={setFlag}
+        wordsOrth={wordsOrth}
       />
       <EssayCounter mistakes={mistakes} role={ROLE} setEssayNum={setEssayNum} />
       <Modal
@@ -225,13 +238,13 @@ const ProfessorPage = ({
         <div id="essay-details">
           <h1 id="essay-header">Πληροφορίες για τις εκθέσεις</h1>
           <p>
-            Παρακάτω εμφανίζονται στον πίνακα οι εκθέσεις που έχουν ελεγχθεί.
+            Στον παρακάτω πίνακα εμφανίζονται οι εκθέσεις που έχουν ελεγχθεί.
             Πιο συγκεκριμένα θα βρείτε πληροφορίες για τον βαθμό της έκθεσης,
-            τον αριθμό των λαθών καθώς και των λέξεων.{" "}
+            τον αριθμό των ορθογραφικών, γραμματικών και λαθών στίξης καθώς και
+            τον συνολικό αριθμό λέξεων.{" "}
           </p>
         </div>
-
-        <DataTable role={ROLE} mistakes={mistakes} />
+        <DataTable role={ROLE} mistakes={mistakes} wordsOrth={wordsOrth} />
       </section>
     </div>
   );

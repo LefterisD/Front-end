@@ -9,28 +9,25 @@ const InputText = ({
   mistakes,
   setWordsToHighlight,
   setcountGram,
-  countGram,
   setcountOrth,
-  countOrth,
   setcountSti,
-  countSti,
   setWordsOrth,
   setWordsGram,
-  user,
   role,
-  setOrthStats,
-  setGramStats,
-  setStiStats,
-  setGrade,
+  setWordCountProf,
+  setWordCountStu,
 }) => {
-  //const [textareaValue, setTextareaValue] = useState("");
   const [textAreaInput, setTextAreaInput] = useState("");
   const [words_json, setWordsJson] = useState([]);
-  //const [tooltipMessage, setTooltipMessage] = useState("");
+
   const [tooltipReplacements, setTooltipReplacements] = useState([]);
   const [characters, setCharacters] = useState(0);
   const [wordCount, setWordCount] = useState(0);
   const [currUser, setCurrUser] = useState("");
+
+  const [weightSpell, setWeightSpell] = useState(0);
+  const [weightGram, setWeightGram] = useState(0);
+  const [weightPunc, setWeightPunc] = useState(0);
 
   let words = [];
   let tooltipMessage = "";
@@ -38,10 +35,12 @@ const InputText = ({
   let replacement_words = [];
   let fakeWordsOrth = [];
   let fakeWordsGram = [];
+  let countOrth1;
+  let countSti1;
+  let countGram1;
 
   //Fetching the api to insert into the db or update a specific word count
   const insert_to_database = (word, type, role) => {
-    console.log(type);
     fetch(
       `http://127.0.0.1:5000/role/${role}/id/${currUser}/type/${type}/word/${word}`,
       {
@@ -65,6 +64,8 @@ const InputText = ({
     setTextAreaInput(input_value);
     setCharacters(char_count);
     setWordCount(w_count);
+    setWordCountProf(w_count);
+    setWordCountStu(w_count);
   };
 
   //vazei sto map tis lekseis kai to poses fores einai lathos
@@ -75,7 +76,6 @@ const InputText = ({
         //console.log("Mpike sto map");
         if (item.word === word) {
           //console.log("Yparxei idia leksi",item.word);
-          console.log("omoia", word);
           item.count = item.count + 1;
           counter = 1;
           insert_to_database(word, "spelling", role);
@@ -138,24 +138,24 @@ const InputText = ({
   //count mistakes for charts
   const findCount = (item, word, firstTime) => {
     if (firstTime == 0) {
-      countOrth = 0;
-      countSti = 0;
-      countGram = 0;
+      countOrth1 = 0;
+      countSti1 = 0;
+      countGram1 = 0;
     }
     if (item.shortMessage == "Ορθογραφικό λάθος") {
-      countOrth++;
-      setcountOrth(countOrth); // dinei me to set sto countorth to athrisma
+      countOrth1++;
+
       setOrthWords(word); // gia na stelnw tin leksi pou einai orthografika lathos
     } else if (
       item.shortMessage == "Ελέγξτε τη στίξη" ||
       item.shortMessage == ""
     ) {
-      countSti++;
-      setcountSti(countSti);
+      countSti1++;
+
       insert_to_database(word, "syntax", role);
     } else if (item.shortMessage == "Επανάληψη λέξης") {
-      countGram++;
-      setcountGram(countGram);
+      countGram1++;
+
       setGramWords(word);
     }
   };
@@ -168,23 +168,6 @@ const InputText = ({
     // To get only the mistake slice from (offset to offset + length) e.g offset = 3  length = 5 => slice(3,8)
     let word1 = sentence.slice(offset, offset + length);
     return word1;
-  };
-  //update essay table
-  const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
-    console.log("ROLE", role);
-    console.log("USER", currUser);
-    fetch(
-      `http://127.0.0.1:5000/essays/add/role/${role}/id/${currUser}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
-  };
-
-  //compute grade
-  const computeErrorPercentage = (wordCount, errors) => {
-    let count_1 = wordCount - errors;
-    return count_1 / wordCount;
   };
 
   // This functions finds all the mistakes (words) the user made and puts them in an array that then is returned to the highlight component to highlight the correspponding words
@@ -201,39 +184,18 @@ const InputText = ({
         firstTime = 1;
         words.push(word);
       });
-      //Essay grading
-
-      let orthPercentage = computeErrorPercentage(wordCount, countOrth);
-      let gramPercentage = computeErrorPercentage(wordCount, countGram);
-      let stiPercentage = computeErrorPercentage(wordCount, countSti);
-      if (role == "student") {
-        setOrthStats(orthPercentage);
-        setGramStats(gramPercentage);
-        setStiStats(stiPercentage);
-      }
-
-      let grade =
-        9 * orthPercentage + 0.5 * gramPercentage + 0.5 * stiPercentage;
-      grade = Math.round(grade * 10) / 10;
-      setGrade(grade);
-      addEssay(countOrth, countGram, countSti, wordCount, grade);
+      console.log("PROFESOR COUNT", countOrth1);
+      adduser(0);
       //------------
+      setcountOrth(countOrth1); // dinei me to set sto countorth to athrisma
+      setcountSti(countSti1);
+      setcountGram(countGram1);
       setWordsOrth(fakeWordsOrth);
       setWordsGram(fakeWordsGram);
       return words;
     } else {
       //If no mistakes are found
-      if (role && currUser) {
-        if (role == "student") {
-          let orthPercentage = computeErrorPercentage(wordCount, countOrth);
-          let gramPercentage = computeErrorPercentage(wordCount, countGram);
-          let stiPercentage = computeErrorPercentage(wordCount, countSti);
-          setOrthStats(orthPercentage);
-          setGramStats(gramPercentage);
-          setStiStats(stiPercentage);
-        }
-        addEssay(0, 0, 0, wordCount, 10);
-      }
+      adduser(1);
       // if mistakes array is empty use a placeholder for the words
       words = [];
       words.push(["placeholder"]);
@@ -241,12 +203,89 @@ const InputText = ({
     }
   };
 
+  const adduser = (flag) => {
+    //get weights to use in the model
+    getWeights();
+    if (flag === 0) {
+      //FOR feedback
+      if (role == "student") {
+        //setOrthStats(orthPercentage);
+        //setGramStats(gramPercentage);
+        //setStiStats(stiPercentage);
+      }
+      if (weightSpell === 0 && weightPunc === 0 && weightGram === 0) {
+        //IF the user enter for he first time we need to give the model he average of each weight
+        getTotalAverageOfWeights();
+      }
+      getWeights();
+    } else {
+      if (role && currUser) {
+        if (role == "student") {
+          //let orthPercentage = computeErrorPercentage(wordCount, countOrth);
+          //let gramPercentage = computeErrorPercentage(wordCount, countGram);
+          //let stiPercentage = computeErrorPercentage(wordCount, countSti);
+          //setOrthStats(orthPercentage);
+          //setGramStats(gramPercentage);
+          //setStiStats(stiPercentage);
+        }
+      }
+    }
+  };
+  //Get weights for a specific user
+  const getWeights = () => {
+    fetch(`http://127.0.0.1:5000/weights/by/${role}/${currUser}`)
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
+
+        setWeightSpell(json_obj[0].spelling_w);
+        setWeightGram(json_obj[0].grammar_w);
+        setWeightPunc(json_obj[0].punctuation_w);
+      });
+  };
+  //Get total average of weights If the user enters for he first time
+  const getTotalAverageOfWeights = () => {
+    let w1 = 0,
+      w2 = 0,
+      w3 = 0,
+      count = 0;
+    fetch(`http://127.0.0.1:5000/test/route`)
+      .then((res) => res.json())
+      .then((data) => {
+        let json_obj = JSON.parse(JSON.stringify(data));
+        /*setWeightSpell(json_obj[0].spelling_w);
+      setWeightGram(json_obj[0].grammar_w);
+      setWeightPunc(json_obj[0].punctuation_w);
+      w1 = json_obj[0].spelling_w;
+      w2 = json_obj[0].grammar_w;
+      w3 = json_obj[0].punctuation_w;*/
+        json_obj.map((x) => {
+          w1 = w1 + x.w1;
+          w2 = w2 + x.w2;
+          w3 = w3 + x.w3;
+          count = count + 1;
+        });
+        if (count !== 0) {
+          w1 = w1 / count;
+          w2 = w2 / count;
+          w3 = w3 / count;
+        }
+        assignUserWeight(w1, w2, w3);
+      });
+  };
+
+  const assignUserWeight = (w1, w2, w3) => {
+    fetch(
+      `http://127.0.0.1:5000/add/user/weights/${role}/${currUser}/${w1}/${w2}/${w3}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+  };
+
   useEffect(() => {
     fakeWordsOrth = [];
     fakeWordsGram = [];
-    setcountOrth(0);
-    setcountGram(0);
-    setcountSti(0);
     setWordsToHighlight(findWrongWords(mistakes));
     prepare_words_for_highlight();
     setCurrUser(localStorage.getItem("uniqid"));

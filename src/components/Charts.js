@@ -31,7 +31,8 @@ const Charts = ({
   const getPieData = () => {
     let temp_dataPie = [];
     //dataPie=[];
-    fetch(`http://127.0.0.1:5000/mistakes/get_all`)
+    let user_id = localStorage.getItem("uniqid");
+    fetch(`http://127.0.0.1:5000/mistakes/get_all/role/${role}/id/${user_id}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));

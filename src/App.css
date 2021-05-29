@@ -1496,8 +1496,11 @@ mark {
 
 .input-wrapper input:focus{
     border-bottom: 2px solid #19547b;
+    
 }
-
+.input-wrapper input:valid{
+    background-color: #fff;
+}
 .input-wrapper label {
     position: absolute;
     top: 15px;
@@ -1507,17 +1510,11 @@ mark {
     transition: all 0.2s;
 }
 
-.input-wrapper input:not(:placeholder-shown) .input-wrapper.input:not(:focus)+label {
+.input-wrapper input:not(:placeholder-shown)+label {
     top: -10px;
     left: 0px;
     color: #19547b;
 }
-
-.input-wrapper input:not([value=""]):not(:focus):invalid+label{
-    top: -10px;
-    left: 0px;
-    color: #19547b;
-  }
 
 .input-wrapper input:focus+label{
     top: -10px;
@@ -1565,6 +1562,25 @@ mark {
     right: 20px;
     z-index: 10 !important;
     background-color: #fff;
+    animation-name: animate-grade;
+    animation-duration: .5s;
+    animation-delay: 1.5s;
+    animation-timing-function: cubic-bezier(.51,.92,.24,1.15);
+    animation-fill-mode: forwards;
+    position: absolute;
+    opacity: 0;
+}
+
+
+@keyframes animate-grade {
+    0% {
+        right: -500px;
+        opacity: 1;
+    }
+    100%{
+        right: 20px;
+        opacity: 1;
+    }
 }
 
 .grade_chart{
@@ -1579,7 +1595,7 @@ mark {
 .grade-text{
     position: absolute;
     top: 95px;
-    left: 170px;
+    left: 160px;
     font-size: 25px;
     color:  #8bd8bd;
 }
@@ -1627,4 +1643,33 @@ mark {
     position: absolute;
     left: -20px;
     top: 5px;
+}
+
+.weight_update_btns{
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.weight_btn {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+}
+
+.fa-thumbs-down, .fa-thumbs-up{
+    font-size: 30px !important;
+    color: #243665;
+    transition: all .3s ease;
+}
+.fa-thumbs-down:hover, .fa-thumbs-up:hover{
+    color: #8bd8bd;
+}
+
+.message_feedback{
+    padding: .5rem 1rem;
+    font-size: 14px;
+    color: var(--text-color);
 }

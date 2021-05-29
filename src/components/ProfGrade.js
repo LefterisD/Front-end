@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FeedBack from "./FeedBack";
+
 import {
   PieChart,
   Cell,
@@ -13,36 +14,28 @@ import {
 
 const COLORS = ["#8BD8BD", "#243665"];
 
-const Grade = ({
+const ProfGrade = ({
   mistakes,
+  wordCountProf,
   role,
   user,
-  wordCountStu,
   flag,
-  countOrth,
-  countGram,
-  countSti,
   setFlag,
+  countGram,
+  countOrth,
+  countSti,
   wordsOrth,
 }) => {
-  const [orthComments, setOrthComments] = useState("");
-  const [gramComments, setGramComments] = useState("");
-  const [stiComments, setStiComments] = useState("");
   const [data, setData] = useState([]);
-
-  const [feedBackOrth, setFeedBackOrth] = useState("");
-  const [feedBackGram, setFeedBackGram] = useState("");
-  const [feedBackSti, setFeedBackSti] = useState("");
-
-  const [orthStats, setOrthStats] = useState(0);
-  const [gramStats, setGramStats] = useState(0);
-  const [stiStats, setStiStats] = useState(0);
-
   const [grade, setGrade] = useState(0);
+  //const [weightSpell, setWeightSpell] = useState(0);
+  const [weightGram, setWeightGram] = useState(0);
+  const [weightPunc, setWeightPunc] = useState(0);
+  const [message, setMessage] = useState("");
 
   let content;
 
-  const fillData = () => {
+  const fillData = (grade) => {
     if (grade) {
       let temp_data = [
         {
@@ -73,6 +66,26 @@ const Grade = ({
     }
   };
 
+  const compute_grade = (flag) => {
+    if (flag === 0) {
+      //Sydelestis 0-1 gia kathe kathgoria
+      let orthPercentage = computeErrorPercentage(wordCountProf, countOrth);
+      let gramPercentage = computeErrorPercentage(wordCountProf, countGram);
+      let stiPercentage = computeErrorPercentage(wordCountProf, countSti);
+
+      //Get weights to compute grade
+      getWeights(orthPercentage, gramPercentage, stiPercentage);
+    } else {
+      addEssay(0, 0, 0, wordCountProf, 10);
+    }
+  };
+
+  //compute coefficient fro ypes of mistakes
+  const computeErrorPercentage = (wordCount, errors) => {
+    let count_1 = wordCount - errors;
+    return count_1 / wordCount;
+  };
+
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
     console.log("MPIKES");
     fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
@@ -89,62 +102,48 @@ const Grade = ({
 
         console.log("DSDEWDEW", weights[0].spelling_w);
 
-        //fillData(temp_grade);
+        fillData(temp_grade);
         setGrade(temp_grade);
-        //addEssay(countOrth, countGram, countSti, wordCountProf, temp_grade);
+        addEssay(countOrth, countGram, countSti, wordCountProf, temp_grade);
       });
   };
 
-  //compute coefficient fro ypes of mistakes
-  const computeErrorPercentage = (wordCount, errors) => {
-    let count_1 = wordCount - errors;
-    return count_1 / wordCount;
+  const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
+    fetch(
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
 
-  const compute_grade = (flag) => {
-    if (flag === 0) {
-      //Sydelestis 0-1 gia kathe kathgoria
-      let orthPercentage = computeErrorPercentage(wordCountStu, countOrth);
-      let gramPercentage = computeErrorPercentage(wordCountStu, countGram);
-      let stiPercentage = computeErrorPercentage(wordCountStu, countSti);
-      console.log("ORTH%", orthPercentage);
-      console.log("WORDCOUNTPROF STYUDENT", wordCountStu);
-      setOrthStats(orthPercentage);
-      setGramStats(gramPercentage);
-      setStiStats(stiPercentage);
-
-      //Get weights to compute grade
-      getWeights(orthPercentage, gramPercentage, stiPercentage);
-    } else {
-      //addEssay(0, 0, 0, wordCountProf, 10);
-    }
+  const fixWeights = () => {
+    setMessage(
+      "Έγιναν κάποιες αλλαγές ώστε να βελτιωθεί ο τρόπος βαθμολόγησης!"
+    );
+    fetch(`http://127.0.0.1:5000/weights/update/${role}/${user}/no`, {
+      method: "POST",
+    }).then((results) => console.log(results));
   };
-
+  const changeMessage = () => {
+    setMessage(
+      "Τέλεια! Το feedback σας βοηθάει την εφαρμογή να μάθει πιο γρήρορα."
+    );
+  };
   useEffect(() => {
+    console.log("GRADE COUNT", countOrth);
     if (flag === false) {
       console.log("FALSE");
       setFlag(true);
     } else {
       findGrade();
-      fillData(grade);
     }
+    setMessage("");
   }, [wordsOrth]);
 
   if (mistakes.length !== 0) {
     content = (
       <div className="grade_box">
-        <FeedBack
-          orthStats={orthStats}
-          gramStats={gramStats}
-          stiStats={stiStats}
-          mistakes={mistakes}
-          role={role}
-          user={user}
-          setFeedBackOrth={setFeedBackOrth}
-          setFeedBackGram={setFeedBackGram}
-          setFeedBackSti={setFeedBackSti}
-          grade={grade}
-        />
         <div className="grade_chart">
           <ResponsiveContainer width="100%" height={180}>
             <PieChart width={500} height={180} id="pie-grade">
@@ -175,17 +174,17 @@ const Grade = ({
           </div>
         </div>
         <div className="content_feedback">
-          <p id="title">Σχόλια:</p>
-          <div className="comments">
-            <div className="comment-wrapper">
-              <p className="comment">{feedBackOrth}</p>
-            </div>
-            <div className="comment-wrapper">
-              <p className="comment">{feedBackGram}</p>
-            </div>
-            <div className="comment-wrapper">
-              <p className="comment">{feedBackSti}</p>
-            </div>
+          <p id="title">Ήταν ικανοποιητική η βαθμολόγηση;</p>
+          <div className="weight_update_btns">
+            <button className="weight_btn" onClick={changeMessage}>
+              <i class="fa fa-thumbs-up thumb" aria-hidden="true"></i>
+            </button>
+            <button className="weight_btn" onClick={fixWeights}>
+              <i class="fa fa-thumbs-down thumb" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div className="message_feedback">
+            <p>{message}</p>
           </div>
         </div>
       </div>
@@ -195,4 +194,4 @@ const Grade = ({
   }
   return <div>{content}</div>;
 };
-export default Grade;
+export default ProfGrade;

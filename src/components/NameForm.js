@@ -29,7 +29,7 @@ const NameForm = () => {
               placeholder=" "
               onChange={inputTextHandler}
             />
-            <label htmlFor="name">Γράψτε μας το όνομά σας!</label>
+            <label htmlFor="name">Γράψτε το όνομά σας!</label>
           </div>
         </div>
         <button onClick={addUserNameToLocalStorage}>Προσθήκη</button>

@@ -90,7 +90,6 @@ const Charts = ({
   const findPieData = (mistakes) => {
     let pieData2 = [];
     if (mistakes.length != 0) {
-      console.log("charts", wordsOrth);
       pieData2 = [];
       pieData2.push(
         {
@@ -129,8 +128,8 @@ const Charts = ({
   };
   console.log("CHANGE----", change);
   useEffect(() => {
+    
     findPieData(mistakes);
-    console.log("DATAPIE", dataPie);
     findWordsBarChar(mistakes);
   }, [wordsOrth, wordsGram]);
 
