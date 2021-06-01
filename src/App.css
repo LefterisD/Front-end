@@ -934,6 +934,38 @@ mark {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.45) !important;
 }
 
+#export-btn {
+    background-color: #8bd8bd;
+    padding: 3px 6px;
+    border-radius: 3px;
+    border: none;
+    color: #fff;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.1s;
+    z-index: 10;
+    margin-bottom: 1rem;
+    margin-top: .1rem;
+    width: 5.5rem;
+}
+#export-btn:hover {
+    transform: translateX(0.1rem);
+    box-shadow: 0 0 0.4rem rgb(0, 0, 0, 0.2);
+}
+
+#table-box {
+    width: 100%;
+    color: #fff;
+}
+#export-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: -2rem;
+}
+
 /*----------------- tooltip  ----------------*/
 
 .tooltip-message {
@@ -1199,14 +1231,38 @@ mark {
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
     display: inline-block !important;
     border-radius: 8px;
-    padding: 20px 25px;
     display: flex;
     flex-direction: column;
     margin-bottom: 50px;
     position: absolute;
-    top: 550px;
+    top: 500px;
     left: 100px;
+    animation-name: animate-counter;
+    animation-duration: .5s;
+    animation-delay: 1s;
+    animation-timing-function: cubic-bezier(.51,.92,.24,1.15);
+    animation-fill-mode: forwards;
+    position: absolute;
+    opacity: 0;
 }
+
+@keyframes animate-counter {
+    0% {
+        left: -500px;
+        opacity: 1;
+    }
+    100%{
+        left: 100px;
+        opacity: 1;
+    }
+}
+#side-bar-title{
+    padding: .7rem 1rem;
+    color: #243665;
+    font-size: 18px;
+    z-index: 100000000;
+}
+
 
 .upper-section {
     display: flex;
@@ -1214,32 +1270,41 @@ mark {
     justify-content: space-between;
     align-items: flex-start;
     text-align: left;
+    border-top: 2px solid #9c9c9c28;
+    padding: .7rem 2rem;
 }
 
 .stat-cont {
     display: flex;
     flex-direction: row;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
+    position: relative;
 }
 .upper-section h2 {
     color: var(--text-color);
     font-weight: 100;
+    font-size: 20px;
 }
 .number-wrapper {
-    padding: 7px;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
+    margin-top: 1px;
     margin-left: 10px;
 }
 .number-wrapper p {
     color: #8bd8bd;
-    font-size: 18px;
+    font-size: 20px;
     
 }
-.lower-section {
-   display: grid;
-   place-items: center;
-   margin-top: 10%;
+
+.upper-section h2::before {
+    background: #8bd8bd;
+    content: "";
+    height: 8px;
+    width: 8px;
+    margin-left: 1%;
+    border-radius: 50%;
+    position: absolute;
+    left: -20px;
+    top: 10px;
 }
 
  #delete-all-data {
@@ -1570,6 +1635,13 @@ mark {
     position: absolute;
     opacity: 0;
 }
+.chart-title{
+    color: #243665;
+    font-size: 18px;
+    width: 100%;
+    text-align: start;
+    padding: .1rem 1rem;
+}
 
 
 @keyframes animate-grade {
@@ -1604,11 +1676,37 @@ mark {
     color: #243665;
 }
 
+.color-info{
+    width: 100% !important;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.color-box{
+    font-size: 12px;
+    padding: .1rem .5rem;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.color-box:nth-child(1){
+    background-color:  #243665e7;
+}
+.color-box:nth-child(3){
+    background-color:  #8bd8bde7;
+}
+.color-box:nth-child(2){
+    background-color:  #ffbb28e1;
+    margin: 0 1rem;
+}
+
 .content_feedback{
     border-top: 2px solid rgba(128, 128, 128, 0.088);
     width: 100%;
     height: 50%;
     padding-top: .5rem;
+    margin-top: 1rem;
 }
 .content_feedback #title{
     font-size: 18px;
@@ -1634,7 +1732,6 @@ mark {
     position: relative;
 }
 .comments .comment::before {
-    background: #8bd8bd;
     content: "";
     height: 8px;
     width: 8px;
@@ -1643,6 +1740,16 @@ mark {
     position: absolute;
     left: -20px;
     top: 5px;
+}
+
+.comments .comment-wrapper:nth-child(1) .comment::before{
+    background-color: #243665;
+}
+.comments .comment-wrapper:nth-child(2) .comment::before{
+    background-color: #8BD8BD;
+}
+.comments .comment-wrapper:nth-child(3) .comment::before{
+    background-color: #FFBB28;
 }
 
 .weight_update_btns{

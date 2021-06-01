@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-const EssayCounter = ({ mistakes, role, setEssayNum }) => {
+const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
   const [averageGrade, setAverageGrade] = useState(0);
   const [counter2, setCounter2] = useState(0);
+  const [essayNum, setEssays] = useState(0);
   const [totalWords, setTotalWords] = useState(0);
   const [averageWords, setAverageWords] = useState(0);
   let content;
@@ -18,6 +19,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum }) => {
         let json_obj = JSON.parse(JSON.stringify(data));
         //setCounter2(json_obj[0].essayCount);
         setEssayNum(json_obj[0].essayCount);
+        setEssays(json_obj[0].essayCount);
         counter = json_obj[0].essayCount;
         if (json_obj[0].essayCount >= 0) {
           getWordCount();
@@ -72,31 +74,28 @@ const EssayCounter = ({ mistakes, role, setEssayNum }) => {
 
   if (role == "professor") {
     content = (
-      <div className="upper-section">
-        <div className="stat-cont">
-          <h2>Αριθμός εκθέσων:</h2>
-          <div className="number-wrapper">
-            <p>{counter2}</p>
+      <div className="side-bar-info">
+        <p id="side-bar-title">ΠΛΗΡΟΦΟΡΙΕΣ</p>
+        <div className="upper-section">
+          <div className="stat-cont">
+            <h2>Αριθμός εκθέσεων:</h2>
+            <div className="number-wrapper">
+              <p>{essayNum}</p>
+            </div>
+          </div>
+          <div className="stat-cont">
+            <h2>Μ.Ο λέξεων:</h2>
+            <div className="number-wrapper">
+              <p>{averageWords}</p>
+            </div>
+          </div>
+          <div className="stat-cont">
+            <h2>Μ.Ο βαθμών:</h2>
+            <div className="number-wrapper">
+              <p>{averageGrade}</p>
+            </div>
           </div>
         </div>
-        <div className="stat-cont">
-          <h2>Μ.Ο λέξεων:</h2>
-          <div className="number-wrapper">
-            <p>{averageWords}</p>
-          </div>
-        </div>
-        <div className="stat-cont">
-          <h2>Μ.Ο βαθμών:</h2>
-          <div className="number-wrapper">
-            <p>{averageGrade}</p>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    content = (
-      <div className="upper-section">
-        <h2>Διαγραφή δεδομένων</h2>
       </div>
     );
   }

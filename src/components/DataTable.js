@@ -8,6 +8,28 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import { ExportToCsv } from "export-to-csv";
+
+const options = {
+  fieldSeparator: ";",
+  filename: "Δεδομένα Κειμένων",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  showTitle: true,
+  title: "Δεδομένα εκθέσεων",
+  useTextFile: false,
+  useBom: true,
+  useKeysAsHeaders: false,
+  headers: [
+    "Έκθεση",
+    "Αριθμός λέξεων",
+    "Ορθογραφικά λάθη",
+    "Γραμματικά λάθη",
+    "Λάθη στίξης",
+    "Βαθμός",
+  ],
+};
 
 const columns = [
   { id: "essay", label: "Έκθεση", minWidth: 170 },
@@ -70,6 +92,7 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState([]);
+  const [allEssays, setAllEssays] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -100,9 +123,34 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
             )
           );
         });
+        //fill data for export
+        //fillExportData(essay_data);
+        setAllEssays(essay_data);
         setRows(temp_data);
         console.log(rows);
       });
+  };
+
+  const fillExportData = (essays) => {
+    var data = [];
+    essays.map((essay) => {
+      data.push({
+        id: essay.essay,
+        num_words: essay.num_words,
+        num_spelling: essay.num_spelling,
+        num_grammar: essay.num_grammar,
+        num_punctuation: essay.num_punctuation,
+        grade: essay.grade,
+      });
+    });
+    return data;
+  };
+
+  const exportData = () => {
+    const csvExporter = new ExportToCsv(options);
+    let forexport = fillExportData(allEssays);
+
+    csvExporter.generateCsv(forexport);
   };
 
   useEffect(() => {
@@ -116,53 +164,66 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
   }, [wordsOrth]);
 
   return (
-    <Paper className={classes.root} id="datatableid">
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </Paper>
+    <div id="table-box">
+      <div id="export-box">
+        <p>Εξαγωγή δεδομένων σε αρχείο .csv:</p>
+        <button id="export-btn" onClick={exportData}>
+          Εξαγωγή
+        </button>
+      </div>
+      <Paper className={classes.root} id="datatableid">
+        <TableContainer className={classes.container}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === "number"
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }

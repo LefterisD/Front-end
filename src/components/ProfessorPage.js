@@ -126,7 +126,12 @@ const ProfessorPage = ({
         setFlag={setFlag}
         wordsOrth={wordsOrth}
       />
-      <EssayCounter mistakes={mistakes} role={ROLE} setEssayNum={setEssayNum} />
+      <EssayCounter
+        mistakes={mistakes}
+        role={ROLE}
+        setEssayNum={setEssayNum}
+        wordsOrth={wordsOrth}
+      />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeAddNewEssayModal}
@@ -241,7 +246,8 @@ const ProfessorPage = ({
             Στον παρακάτω πίνακα εμφανίζονται οι εκθέσεις που έχουν ελεγχθεί.
             Πιο συγκεκριμένα θα βρείτε πληροφορίες για τον βαθμό της έκθεσης,
             τον αριθμό των ορθογραφικών, γραμματικών και λαθών στίξης καθώς και
-            τον συνολικό αριθμό λέξεων.{" "}
+            τον συνολικό αριθμό λέξεων. Επιπλέον μπορείτε να κάνετε εξαγωγή τα
+            δεδομένα αυτά σε μορφή csv.
           </p>
         </div>
         <DataTable role={ROLE} mistakes={mistakes} wordsOrth={wordsOrth} />

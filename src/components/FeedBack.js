@@ -11,6 +11,9 @@ const FeedBack = ({
   setFeedBackGram,
   setFeedBackSti,
   grade,
+  orthRate,
+  gramRate,
+  stiRate,
 }) => {
   const feedback = [
     {
@@ -49,11 +52,31 @@ const FeedBack = ({
     },
   ];
 
+  const feedbackMessage = [
+    {
+      orth: [
+        {
+          comment: `Τα ορθογραφικά σας λάθη αποτελούν το ${orthRate}% των λέξεων.`,
+        },
+      ],
+      gram: [
+        {
+          comment: `Τα γραμματικά σας λάθη αποτελούν το ${gramRate}% των λέξεων.`,
+        },
+      ],
+      sti: [
+        {
+          comment: `Τα λάθη στίξης, αποτελούν το ${stiRate}% των λέξεων.`,
+        },
+      ],
+    },
+  ];
+
   const pickFeedback = (orthStats, gramStats, stiStats) => {
     console.log("ORTH", orthStats);
     console.log("ORTH", gramStats);
     console.log("ORTH", stiStats);
-    if (orthStats > 0.95) {
+    /*if (orthStats > 0.95) {
       let message = feedback[0].orth[0].best;
       setFeedBackOrth(message);
     } else if (orthStats > 0.5 && orthStats <= 0.95) {
@@ -93,7 +116,11 @@ const FeedBack = ({
     } else if (stiStats > 0 && stiStats <= 0.25) {
       let message = feedback[0].sti[0].bad;
       setFeedBackSti(message);
-    }
+    }*/
+    console.log("STIKSH", stiStats);
+    setFeedBackOrth(feedbackMessage[0].orth[0].comment);
+    setFeedBackGram(feedbackMessage[0].gram[0].comment);
+    setFeedBackSti(feedbackMessage[0].sti[0].comment);
   };
 
   useEffect(() => {

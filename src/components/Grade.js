@@ -40,6 +40,10 @@ const Grade = ({
 
   const [grade, setGrade] = useState(0);
 
+  const [orthRate, setOrthRate] = useState(0);
+  const [gramRate, setGramRate] = useState(0);
+  const [stiRate, setStiRate] = useState(0);
+
   let content;
 
   const fillData = () => {
@@ -101,6 +105,18 @@ const Grade = ({
     return count_1 / wordCount;
   };
 
+  const computeRate = (wordCountStu, errors) => {
+    let pos = 0;
+    pos = 100 * errors;
+    console.log(errors);
+    console.log(wordCountStu);
+    console.log(pos);
+    pos = pos / wordCountStu;
+    //console.log(pos);
+    pos = Math.round(pos * 10) / 10;
+    return pos;
+  };
+
   const compute_grade = (flag) => {
     if (flag === 0) {
       //Sydelestis 0-1 gia kathe kathgoria
@@ -112,7 +128,10 @@ const Grade = ({
       setOrthStats(orthPercentage);
       setGramStats(gramPercentage);
       setStiStats(stiPercentage);
-
+      //pososto spelling
+      setOrthRate(computeRate(wordCountStu, countOrth));
+      setGramRate(computeRate(wordCountStu, countGram));
+      setStiRate(computeRate(wordCountStu, countSti));
       //Get weights to compute grade
       getWeights(orthPercentage, gramPercentage, stiPercentage);
     } else {
@@ -144,7 +163,11 @@ const Grade = ({
           setFeedBackGram={setFeedBackGram}
           setFeedBackSti={setFeedBackSti}
           grade={grade}
+          orthRate={orthRate}
+          gramRate={gramRate}
+          stiRate={stiRate}
         />
+        <p className="chart-title">Βαθμός:</p>
         <div className="grade_chart">
           <ResponsiveContainer width="100%" height={180}>
             <PieChart width={500} height={180} id="pie-grade">
@@ -167,12 +190,18 @@ const Grade = ({
               </Pie>
             </PieChart>
           </ResponsiveContainer>
+
           <div className="grade-text">
             <p>
               {grade}
               <span id="grade-span">/20</span>
             </p>
           </div>
+        </div>
+        <div id="color-info">
+          <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
+          <span className="color-box">ΣΤΙΞΗΣ</span>
+          <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
         </div>
         <div className="content_feedback">
           <p id="title">Σχόλια:</p>

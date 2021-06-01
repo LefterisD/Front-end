@@ -144,6 +144,7 @@ const ProfGrade = ({
   if (mistakes.length !== 0) {
     content = (
       <div className="grade_box">
+        <p className="chart-title">Βαθμός:</p>
         <div className="grade_chart">
           <ResponsiveContainer width="100%" height={180}>
             <PieChart width={500} height={180} id="pie-grade">
@@ -172,6 +173,11 @@ const ProfGrade = ({
               <span id="grade-span">/20</span>
             </p>
           </div>
+        </div>
+        <div id="color-info">
+          <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
+          <span className="color-box">ΣΤΙΞΗΣ</span>
+          <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
         </div>
         <div className="content_feedback">
           <p id="title">Ήταν ικανοποιητική η βαθμολόγηση;</p>
