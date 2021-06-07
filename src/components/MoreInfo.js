@@ -73,8 +73,32 @@ const MoreInfo = ({ info, role }) => {
                   />
                   <label htmlFor="age">Ηλικία</label>
                 </div>
-                <div className="input-wrapper">
-                  <input
+                <div className="select-wrapper">
+                  <label className="select-label" htmlFor="level">
+                    Μορφωτικό Επίπεδο
+                  </label>
+                  <select
+                    id="level"
+                    name="level"
+                    className="student_select_field"
+                    onChange={(e) => {
+                      setEdu(e.target.value);
+                    }}
+                  >
+                    <option disabled selected value>
+                      -- Επιλέξτε --
+                    </option>
+                    <option className="option-value" value="Γυμνάσιο">
+                      Γυμνάσιο
+                    </option>
+                    <option className="option-value" value="Λύκειο">
+                      Λύκειο
+                    </option>
+                    <option className="option-value" value="Πανεπιστήμιο">
+                      Πανεπιστήμιο
+                    </option>
+                  </select>
+                  {/*<input
                     type="text"
                     id="level"
                     name="level"
@@ -83,11 +107,34 @@ const MoreInfo = ({ info, role }) => {
                     onChange={(e) => {
                       setEdu(e.target.value);
                     }}
-                  />
-                  <label htmlFor="level">Μορφωτικό Επίπεδο</label>
+                  />*/}
                 </div>
-                <div className="input-wrapper">
-                  <input
+                <div className="select-wrapper">
+                  <label className="select-label" htmlFor="level">
+                    Μητρική Γλώσσα
+                  </label>
+                  <select
+                    id="MT"
+                    name="MT"
+                    className="student_select_field"
+                    onChange={(e) => {
+                      setEdu(e.target.value);
+                    }}
+                  >
+                    <option disabled selected value>
+                      -- Επιλέξτε --
+                    </option>
+                    <option className="option-value" value="Ελληνικά">
+                      Ελληνικά
+                    </option>
+                    <option className="option-value" value="Αγγλικά">
+                      Αγγλικά
+                    </option>
+                    <option className="option-value" value="Άλλη">
+                      Άλλη
+                    </option>
+                  </select>
+                  {/*<input
                     type="text"
                     id="MT"
                     name="MT"
@@ -97,7 +144,7 @@ const MoreInfo = ({ info, role }) => {
                       setM_tongue(e.target.value);
                     }}
                   />
-                  <label htmlFor="MT">Μητρική γλώσσα</label>
+                  <label htmlFor="MT">Μητρική γλώσσα</label>*/}
                 </div>
                 <div className="input-wrapper">
                   <input type="text" id="id" name="id" value={usr} />

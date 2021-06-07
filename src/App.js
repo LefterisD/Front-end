@@ -10,6 +10,7 @@ import StudentPage from "./components/StudentPage";
 import NameForm from "./components/NameForm";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import uniqid from "uniqid";
+import TypeWriter from "react-typewriter";
 
 const customStyles = {
   overlay: {
@@ -94,11 +95,16 @@ function App() {
             <div id="skewed">
               <div className="jumbo">
                 <h1> CheckIt </h1>
-                <p>
+                {/*<p>
                   Το CheckIt είναι μια web εφαρμογή ελέγχου και βαθμολόγησης
                   εκθέσεων που χρησιμοποιείται από καθηγητές και μαθητές σε όλη
                   την Ελλάδα.
-                </p>
+                </p>*/}
+                <TypeWriter typing={2} fixed={true}>
+                  Το CheckIt είναι μια web εφαρμογή ελέγχου και βαθμολόγησης
+                  κειμένων που χρησιμοποιείται από καθηγητές και μαθητές σε όλη
+                  την Ελλάδα.
+                </TypeWriter>
               </div>
               {nameForm}
               <div className="cards">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -17,7 +17,7 @@ const options = {
   decimalSeparator: ".",
   showLabels: true,
   showTitle: true,
-  title: "Δεδομένα εκθέσεων",
+  title: "Δεδομένα Κειμένων Μαθητών",
   useTextFile: false,
   useBom: true,
   useKeysAsHeaders: false,
@@ -32,7 +32,8 @@ const options = {
 };
 
 const columns = [
-  { id: "essay", label: "Έκθεση", minWidth: 170 },
+  { id: "stu_name", label: "Μαθητής", minWidth: 170 },
+  { id: "stu_class", label: "Τμήμα", minWidth: 100 },
   { id: "num_words", label: "Αριθμός λέξεων", minWidth: 100 },
   {
     id: "num_spelling",
@@ -61,7 +62,8 @@ const columns = [
 ];
 
 function createData(
-  essay,
+  stu_name,
+  stu_class,
   num_words,
   num_spelling,
   num_grammar,
@@ -69,7 +71,8 @@ function createData(
   grade
 ) {
   return {
-    essay,
+    stu_name,
+    stu_class,
     num_words,
     num_spelling,
     num_grammar,
@@ -87,12 +90,23 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataTable({ role, mistakes, wordsOrth }) {
+export default function DataTable({
+  role,
+  mistakes,
+  wordsOrth,
+  countOrth,
+  countGram,
+  countSti,
+  change,
+  posted,
+}) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState([]);
   const [allEssays, setAllEssays] = useState([]);
+  const [changeState, setChange] = useState([]);
+  //const [rows, setRows] = useReducer([0, 0, 0, 0, 0, 0]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -103,6 +117,34 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
     setPage(0);
   };
 
+  /*
+  async function getEssayData() {
+    let temp_data = [];
+    let user_id = localStorage.getItem("uniqid");
+
+    const response = await fetch(
+      `http://127.0.0.1:5000/essays/all/role/${role}/id/${user_id}`
+    );
+
+    const essay_data = await response.json();
+    essay_data.map((essay) => {
+      temp_data.push(
+        createData(
+          essay.essay,
+          essay.num_words,
+          essay.num_spelling,
+          essay.num_grammar,
+          essay.num_punctuation,
+          essay.grade
+        )
+      );
+    });
+    //fill data for export
+    //fillExportData(essay_data);
+    setAllEssays(essay_data);
+    setRows(temp_data);
+  }*/
+
   const getEssayData = () => {
     let temp_data = [];
     let user_id = localStorage.getItem("uniqid");
@@ -110,11 +152,12 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
       .then((res) => res.json())
       .then((essays) => {
         let essay_data = JSON.parse(JSON.stringify(essays));
-
+        console.log("DES TA ESSAY DAATA----------", essay_data);
         essay_data.map((essay) => {
           temp_data.push(
             createData(
-              essay.essay,
+              essay.stu_name,
+              essay.stu_class,
               essay.num_words,
               essay.num_spelling,
               essay.num_grammar,
@@ -135,7 +178,8 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
     var data = [];
     essays.map((essay) => {
       data.push({
-        id: essay.essay,
+        stu_name: essay.stu_name,
+        stu_class: essay.stu_class,
         num_words: essay.num_words,
         num_spelling: essay.num_spelling,
         num_grammar: essay.num_grammar,
@@ -156,12 +200,18 @@ export default function DataTable({ role, mistakes, wordsOrth }) {
   useEffect(() => {
     //API CALL TO GET THE DATA
     getEssayData();
-  }, []);
+    //setChange(new Date());
+  }, [posted]);
+
+  //Updates table but results in an infinite loop with infinite requests to the server
+  /*useEffect(() => {
+    getEssayData();
+  }, [rows]);*/
 
   useEffect(() => {
     //API CALL TO GET THE DATA
     getEssayData();
-  }, [wordsOrth]);
+  }, [mistakes]);
 
   return (
     <div id="table-box">

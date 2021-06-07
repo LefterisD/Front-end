@@ -78,7 +78,6 @@ const Grade = ({
   };
 
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
-    console.log("MPIKES");
     fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
       .then((res) => res.json())
       .then((data) => {
@@ -91,12 +90,19 @@ const Grade = ({
 
         temp_grade = Math.round(temp_grade * 10) / 10;
 
-        console.log("DSDEWDEW", weights[0].spelling_w);
-
         //fillData(temp_grade);
         setGrade(temp_grade);
-        //addEssay(countOrth, countGram, countSti, wordCountProf, temp_grade);
+        addEssay(countOrth, countGram, countSti, wordCountStu, temp_grade);
       });
+  };
+  //add essay to  use table
+  const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
+    fetch(
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
 
   //compute coefficient fro ypes of mistakes
@@ -123,8 +129,6 @@ const Grade = ({
       let orthPercentage = computeErrorPercentage(wordCountStu, countOrth);
       let gramPercentage = computeErrorPercentage(wordCountStu, countGram);
       let stiPercentage = computeErrorPercentage(wordCountStu, countSti);
-      console.log("ORTH%", orthPercentage);
-      console.log("WORDCOUNTPROF STYUDENT", wordCountStu);
       setOrthStats(orthPercentage);
       setGramStats(gramPercentage);
       setStiStats(stiPercentage);
@@ -135,13 +139,12 @@ const Grade = ({
       //Get weights to compute grade
       getWeights(orthPercentage, gramPercentage, stiPercentage);
     } else {
-      //addEssay(0, 0, 0, wordCountProf, 10);
+      addEssay(0, 0, 0, wordCountStu, 20);
     }
   };
 
   useEffect(() => {
     if (flag === false) {
-      console.log("FALSE");
       setFlag(true);
     } else {
       findGrade();
@@ -166,6 +169,9 @@ const Grade = ({
           orthRate={orthRate}
           gramRate={gramRate}
           stiRate={stiRate}
+          countOrth={countOrth}
+          countGram={countGram}
+          countSti={countSti}
         />
         <p className="chart-title">Βαθμός:</p>
         <div className="grade_chart">

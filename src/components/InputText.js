@@ -50,7 +50,7 @@ const InputText = ({
   };
   //kossy wordCount
   const insert_count = (wordCount) => {
-    fetch(`http://127.0.0.1:5000/mistakes/${wordCount}`, {
+    fetch(`http://127.0.0.1:5000/mistakes/${wordCount}/${currUser}/${role}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };
@@ -172,9 +172,7 @@ const InputText = ({
 
   // This functions finds all the mistakes (words) the user made and puts them in an array that then is returned to the highlight component to highlight the correspponding words
   const findWrongWords = (mistakes) => {
-    if (role === "professor") {
-      insert_count(wordCount);
-    }
+    insert_count(wordCount);
     if (mistakes.length != 0) {
       let firstTime = 0;
       words = [];

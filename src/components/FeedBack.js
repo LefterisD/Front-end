@@ -14,6 +14,9 @@ const FeedBack = ({
   orthRate,
   gramRate,
   stiRate,
+  countOrth,
+  countGram,
+  countSti,
 }) => {
   const feedback = [
     {
@@ -57,16 +60,19 @@ const FeedBack = ({
       orth: [
         {
           comment: `Τα ορθογραφικά σας λάθη αποτελούν το ${orthRate}% των λέξεων.`,
+          correct: `Δεν υπάρχουν ορθογραφικά λάθη!`,
         },
       ],
       gram: [
         {
           comment: `Τα γραμματικά σας λάθη αποτελούν το ${gramRate}% των λέξεων.`,
+          correct: `Δεν υπάρχουν γραμματικά λάθη!`,
         },
       ],
       sti: [
         {
           comment: `Τα λάθη στίξης, αποτελούν το ${stiRate}% των λέξεων.`,
+          correct: `Δεν υπάρχουν λάθη στίξης!`,
         },
       ],
     },
@@ -117,10 +123,23 @@ const FeedBack = ({
       let message = feedback[0].sti[0].bad;
       setFeedBackSti(message);
     }*/
-    console.log("STIKSH", stiStats);
-    setFeedBackOrth(feedbackMessage[0].orth[0].comment);
-    setFeedBackGram(feedbackMessage[0].gram[0].comment);
-    setFeedBackSti(feedbackMessage[0].sti[0].comment);
+
+    if (countOrth === 0) {
+      setFeedBackOrth(feedbackMessage[0].orth[0].correct);
+    } else {
+      setFeedBackOrth(feedbackMessage[0].orth[0].comment);
+    }
+
+    if (countGram === 0) {
+      setFeedBackGram(feedbackMessage[0].gram[0].correct);
+    } else {
+      setFeedBackGram(feedbackMessage[0].gram[0].comment);
+    }
+    if (stiStats === 0) {
+      setFeedBackSti(feedbackMessage[0].sti[0].correct);
+    } else {
+      setFeedBackSti(feedbackMessage[0].sti[0].comment);
+    }
   };
 
   useEffect(() => {

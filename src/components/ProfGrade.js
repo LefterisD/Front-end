@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import FeedBack from "./FeedBack";
+import Modal from "react-modal";
 
 import {
   PieChart,
@@ -12,7 +13,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#8BD8BD", "#243665"];
+const COLORS = ["#16c79a ", "#e1e5ea"];
+
+const customStyles = {
+  overlay: {
+    zIndex: 1000,
+    background: "rgba(0,0,0, 0.3)",
+  },
+};
 
 const ProfGrade = ({
   mistakes,
@@ -25,15 +33,42 @@ const ProfGrade = ({
   countOrth,
   countSti,
   wordsOrth,
+  setPosted,
 }) => {
+  const [modalIsOpen, setIsOpen] = useState(false);
   const [data, setData] = useState([]);
   const [grade, setGrade] = useState(0);
+  const [userGrade, setUserGrade] = useState(0);
   //const [weightSpell, setWeightSpell] = useState(0);
   const [weightGram, setWeightGram] = useState(0);
   const [weightPunc, setWeightPunc] = useState(0);
   const [message, setMessage] = useState("");
+  const [afterFixMessage, setAferFixMessage] = useState("");
+
+  const [orthRate, setOrthRate] = useState(0);
+  const [gramRate, setGramRate] = useState(0);
+  const [stiRate, setStiRate] = useState(0);
+
+  const [orthStats, setOrthStats] = useState(0);
+  const [gramStats, setGramStats] = useState(0);
+  const [stiStats, setStiStats] = useState(0);
+
+  const [feedBackOrth, setFeedBackOrth] = useState("");
+  const [feedBackGram, setFeedBackGram] = useState("");
+  const [feedBackSti, setFeedBackSti] = useState("");
+
+  //const [noMistakes, setNoMistakes] = useState(false);
 
   let content;
+
+  function openWeightFixModal(e) {
+    e.preventDefault();
+    setIsOpen(true);
+  }
+
+  function closeAddNewEssayModal() {
+    setIsOpen(false);
+  }
 
   const fillData = (grade) => {
     if (grade) {
@@ -66,6 +101,18 @@ const ProfGrade = ({
     }
   };
 
+  const computeRate = (wordCount, errors) => {
+    let pos = 0;
+    pos = 100 * errors;
+    console.log(errors);
+    console.log(wordCount);
+    console.log(pos);
+    pos = pos / wordCount;
+    //console.log(pos);
+    pos = Math.round(pos * 10) / 10;
+    return pos;
+  };
+
   const compute_grade = (flag) => {
     if (flag === 0) {
       //Sydelestis 0-1 gia kathe kathgoria
@@ -73,10 +120,23 @@ const ProfGrade = ({
       let gramPercentage = computeErrorPercentage(wordCountProf, countGram);
       let stiPercentage = computeErrorPercentage(wordCountProf, countSti);
 
+      setOrthStats(orthPercentage);
+      setGramStats(gramPercentage);
+      setStiStats(stiPercentage);
+      //pososto spelling
+      setOrthRate(computeRate(wordCountProf, countOrth));
+      setGramRate(computeRate(wordCountProf, countGram));
+      setStiRate(computeRate(wordCountProf, countSti));
+
       //Get weights to compute grade
+      //setNoMistakes(false);
       getWeights(orthPercentage, gramPercentage, stiPercentage);
     } else {
-      addEssay(0, 0, 0, wordCountProf, 10);
+      //setNoMistakes(true);
+      fillData(20);
+      setGrade(20);
+      addEssay(0, 0, 0, wordCountProf, 20);
+      setPosted(new Date());
     }
   };
 
@@ -87,7 +147,6 @@ const ProfGrade = ({
   };
 
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
-    console.log("MPIKES");
     fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
       .then((res) => res.json())
       .then((data) => {
@@ -100,50 +159,86 @@ const ProfGrade = ({
 
         temp_grade = Math.round(temp_grade * 10) / 10;
 
-        console.log("DSDEWDEW", weights[0].spelling_w);
-
         fillData(temp_grade);
         setGrade(temp_grade);
         addEssay(countOrth, countGram, countSti, wordCountProf, temp_grade);
+        setPosted(new Date());
       });
   };
 
   const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
+    let stu_name = localStorage.getItem("StudentName");
+    let stu_class = localStorage.getItem("StudentClass");
     fetch(
-      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/student/${stu_name}/class/${stu_class}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
       {
         method: "POST",
       }
     ).then((results) => console.log(results));
+    //Delete user info from local storage once the essay data is posted in the db
+    localStorage.setItem("StudentName", "");
+    localStorage.setItem("StudentClass", "");
   };
 
-  const fixWeights = () => {
-    setMessage(
-      "Έγιναν κάποιες αλλαγές ώστε να βελτιωθεί ο τρόπος βαθμολόγησης!"
-    );
-    fetch(`http://127.0.0.1:5000/weights/update/${role}/${user}/no`, {
-      method: "POST",
-    }).then((results) => console.log(results));
+  const fixWeights = (type) => {
+    if (type === "spelling") {
+      setAferFixMessage(
+        "Το σύστημα θα δίνει πλέον μεγαλύτερη βαρύτητα στα ορθογραφικά λάθη!"
+      );
+    } else if (type === "grammar") {
+      setAferFixMessage(
+        "Το σύστημα θα δίνει πλέον μεγαλύτερη βαρύτητα στα γραμματικά λάθη!"
+      );
+    } else {
+      setAferFixMessage(
+        "Το σύστημα θα δίνει πλέον μεγαλύτερη βαρύτητα στα λάθη στίξης!"
+      );
+    }
+
+    fetch(
+      `http://127.0.0.1:5000/weights/update/${role}/${user}/${type}/${grade}/${userGrade}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
   const changeMessage = () => {
     setMessage(
       "Τέλεια! Το feedback σας βοηθάει την εφαρμογή να μάθει πιο γρήρορα."
     );
   };
+
   useEffect(() => {
-    console.log("GRADE COUNT", countOrth);
     if (flag === false) {
-      console.log("FALSE");
       setFlag(true);
     } else {
       findGrade();
     }
     setMessage("");
+    setAferFixMessage("");
   }, [wordsOrth]);
 
   if (mistakes.length !== 0) {
     content = (
       <div className="grade_box">
+        <FeedBack
+          orthStats={orthStats}
+          gramStats={gramStats}
+          stiStats={stiStats}
+          mistakes={mistakes}
+          role={role}
+          user={user}
+          setFeedBackOrth={setFeedBackOrth}
+          setFeedBackGram={setFeedBackGram}
+          setFeedBackSti={setFeedBackSti}
+          grade={grade}
+          orthRate={orthRate}
+          gramRate={gramRate}
+          stiRate={stiRate}
+          countOrth={countOrth}
+          countGram={countGram}
+          countSti={countSti}
+        />
         <p className="chart-title">Βαθμός:</p>
         <div className="grade_chart">
           <ResponsiveContainer width="100%" height={180}>
@@ -174,10 +269,25 @@ const ProfGrade = ({
             </p>
           </div>
         </div>
-        <div id="color-info">
-          <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
-          <span className="color-box">ΣΤΙΞΗΣ</span>
-          <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
+
+        <div className="content_feedback">
+          <p id="title">Σχόλια:</p>
+          <div className="comments">
+            <div className="comment-wrapper">
+              <p className="comment">{feedBackOrth}</p>
+            </div>
+            <div className="comment-wrapper">
+              <p className="comment">{feedBackGram}</p>
+            </div>
+            <div className="comment-wrapper">
+              <p className="comment">{feedBackSti}</p>
+            </div>
+          </div>
+          <div id="color-info">
+            <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
+            <span className="color-box">ΣΤΙΞΗΣ</span>
+            <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
+          </div>
         </div>
         <div className="content_feedback">
           <p id="title">Ήταν ικανοποιητική η βαθμολόγηση;</p>
@@ -185,7 +295,7 @@ const ProfGrade = ({
             <button className="weight_btn" onClick={changeMessage}>
               <i class="fa fa-thumbs-up thumb" aria-hidden="true"></i>
             </button>
-            <button className="weight_btn" onClick={fixWeights}>
+            <button className="weight_btn" onClick={openWeightFixModal}>
               <i class="fa fa-thumbs-down thumb" aria-hidden="true"></i>
             </button>
           </div>
@@ -198,6 +308,72 @@ const ProfGrade = ({
   } else {
     content = <div></div>;
   }
-  return <div>{content}</div>;
+  return (
+    <div>
+      {content}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeAddNewEssayModal}
+        className="modal-essay"
+        style={customStyles}
+        contentLabel="Test Modal"
+        closeTimeoutMS={300}
+      >
+        <header>
+          <button onClick={closeAddNewEssayModal}>
+            <i class="fas fa-times"></i>
+          </button>
+        </header>
+        <div className="fix_weights_container">
+          <div className="computed_grade_wrapper">
+            Ο βαθμός που υπολογίστηκε είναι:
+            <span id="computed_grade">{grade}</span>
+          </div>
+          <div className="new_grade_input">
+            <label htmlFor="new_grade">Τι βαθμό θα βάζατε;</label>
+            <input
+              type="number"
+              name="new_grade"
+              id="new_grade"
+              step="0.1"
+              onChange={(e) => setUserGrade(e.target.value)}
+            />
+          </div>
+          <div className="category_wrapper">
+            <p>
+              Σε ποια κατηγορία λαθών θα θέλατε το σύστημα να δίνει μεγαλύτερη
+              βαρύτητα;
+            </p>
+            <div id="type_btn_wrapper">
+              <button
+                className="type_btn"
+                id="spelling"
+                onClick={() => fixWeights("spelling")}
+              >
+                Ορθογραφικά
+              </button>
+              <button
+                className="type_btn"
+                id="grammar"
+                onClick={() => fixWeights("grammar")}
+              >
+                Γραμματικά
+              </button>
+              <button
+                className="type_btn"
+                id="punctuation"
+                onClick={() => fixWeights("punctuation")}
+              >
+                Στίξης
+              </button>
+            </div>
+          </div>
+          <div id="after_fix_info">
+            <p>{afterFixMessage}</p>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
 };
 export default ProfGrade;

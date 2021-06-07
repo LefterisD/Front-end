@@ -27,6 +27,8 @@ const StudentPage = ({ user, change }) => {
   const [wordCountProf, setWordCountProf] = useState(0);
   const [flag, setFlag] = useState(false);
 
+  const [essayNumStu, setEssayNumStu] = useState(0);
+
   //feedback
 
   const [grade, setGrade] = useState(0);
@@ -123,6 +125,12 @@ const StudentPage = ({ user, change }) => {
         setWordCountProf={setWordCountProf}
         setWordCountStu={setWordCountStu}
       />
+      <EssayCounter
+        mistakes={mistakesStudent}
+        role={ROLE}
+        setEssayNum={setEssayNumStu}
+        wordsOrth={wordsOrth}
+      />
 
       <Grade
         mistakes={mistakesStudent}
@@ -141,8 +149,8 @@ const StudentPage = ({ user, change }) => {
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart">
-              Συνολικά στατιστικά <span id="chart-span">X </span>
-              εκθέσεων
+              Συνολικά στατιστικά <span id="chart-span">{essayNumStu} </span>
+              κειμένων
             </h2>
             <div className="delete-content">
               <p>Διαγραφή δεδομένων</p>
@@ -163,7 +171,7 @@ const StudentPage = ({ user, change }) => {
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά μιας έκθεσης
+              Στατιστικά τελευταίου κειμένου
             </h2>
           </div>
           <ChartOne

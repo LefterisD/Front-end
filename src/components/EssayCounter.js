@@ -6,8 +6,30 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
   const [essayNum, setEssays] = useState(0);
   const [totalWords, setTotalWords] = useState(0);
   const [averageWords, setAverageWords] = useState(0);
+  //student info
+  const [name, setName] = useState("");
+  const [stuClass, setClass] = useState("");
   let content;
+  let proffContent;
+  let compoClass;
   let counter = 0;
+
+  const nameHandler = (e) => {
+    let name = e.target.value;
+    setName(name);
+  };
+  const classHandler = (e) => {
+    let stuClass = e.target.value;
+    setClass(stuClass);
+  };
+
+  const addStudentInfo = (e) => {
+    e.preventDefault();
+    localStorage.setItem("StudentName", name);
+    localStorage.setItem("StudentClass", stuClass);
+
+    document.getElementById("info_form").reset();
+  };
 
   const get_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
@@ -22,17 +44,19 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
         setEssays(json_obj[0].essayCount);
         counter = json_obj[0].essayCount;
         if (json_obj[0].essayCount >= 0) {
+          console.log("GETESSAYCOUNT+++++BHKE", json_obj[0].essayCount);
           getWordCount();
         }
       });
   };
 
   const getWordCount = () => {
-    fetch(`http://127.0.0.1:5000/getTotalWords`)
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(`http://127.0.0.1:5000/getTotalWords/${curr_user}/${role}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
-        setTotalWords(json_obj[0].averageWords);
+        getGradeTA();
         if (counter != 0) {
           let temp_total_average = Math.floor(
             json_obj[0].averageWords / counter
@@ -52,7 +76,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
         let essay_data = JSON.parse(JSON.stringify(essays));
         let grade_counter = 0;
         essay_data.map((essay) => {
-          grade_counter = grade_counter + parseInt(essay.grade);
+          grade_counter = grade_counter + parseFloat(essay.grade);
         });
         console.log("ALL", grade_counter);
         console.log("counter", counter);
@@ -69,13 +93,52 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
 
   useEffect(() => {
     get_essay_count();
-    getGradeTA();
-  }, [mistakes]);
+  }, [wordsOrth]);
 
   if (role == "professor") {
-    content = (
+    compoClass = "counter-wrapper";
+    proffContent = (
+      <div>
+        <p className="side-bar-title">Στοιχεια μαθητη</p>
+        <div className="student_info_wrapper">
+          <div className="student_info_form">
+            <form id="info_form">
+              <div className="student_input">
+                <label htmlFor="name">Όνομα μαθητή</label>
+                <input
+                  type="text"
+                  name="name"
+                  onChange={nameHandler}
+                  required
+                />
+              </div>
+              <div className="student_input">
+                <label htmlFor="class">Τμήμα</label>
+                <input
+                  type="text"
+                  name="class"
+                  onChange={classHandler}
+                  required
+                />
+              </div>
+              <div id="btn_wrapper">
+                <button id="add_student_info" onClick={addStudentInfo}>
+                  Πρσθήκη
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  } else {
+    compoClass = "counter-wrapper counter-wrapper-stu";
+  }
+
+  return (
+    <div className={compoClass}>
       <div className="side-bar-info">
-        <p id="side-bar-title">ΠΛΗΡΟΦΟΡΙΕΣ</p>
+        <p className="side-bar-title">ΠΛΗΡΟΦΟΡΙΕΣ</p>
         <div className="upper-section">
           <div className="stat-cont">
             <h2>Αριθμός εκθέσεων:</h2>
@@ -96,10 +159,10 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
             </div>
           </div>
         </div>
+        {proffContent}
       </div>
-    );
-  }
-  return <div className="counter-wrapper">{content}</div>;
+    </div>
+  );
 };
 
 export default EssayCounter;

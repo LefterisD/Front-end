@@ -41,6 +41,8 @@ const ProfessorPage = ({
   const [wordCountStu, setWordCountStu] = useState(0);
   const [flag, setFlag] = useState(false);
 
+  const [posted, setPosted] = useState();
+
   const ROLE = "professor";
 
   function openAddNewEssayModal(e) {
@@ -125,6 +127,7 @@ const ProfessorPage = ({
         countSti={countSti}
         setFlag={setFlag}
         wordsOrth={wordsOrth}
+        setPosted={setPosted}
       />
       <EssayCounter
         mistakes={mistakes}
@@ -202,7 +205,7 @@ const ProfessorPage = ({
           <div className="chart-section-title">
             <h2 className="title-chart">
               Συνολικά στατιστικά <span id="chart-span">{essayNum} </span>
-              εκθέσεων
+              κειμένων
             </h2>
             <div className="delete-content">
               <p>Διαγραφή δεδομένων</p>
@@ -223,7 +226,7 @@ const ProfessorPage = ({
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά μιας έκθεσης
+              Στατιστικά τελευταίου κειμένου
             </h2>
           </div>
           <ChartOne
@@ -241,16 +244,25 @@ const ProfessorPage = ({
       </div>
       <section className="essay-section">
         <div id="essay-details">
-          <h1 id="essay-header">Πληροφορίες για τις εκθέσεις</h1>
+          <h1 id="essay-header">Πληροφορίες για τα Κείμενα των μαθητών</h1>
           <p>
-            Στον παρακάτω πίνακα εμφανίζονται οι εκθέσεις που έχουν ελεγχθεί.
-            Πιο συγκεκριμένα θα βρείτε πληροφορίες για τον βαθμό της έκθεσης,
-            τον αριθμό των ορθογραφικών, γραμματικών και λαθών στίξης καθώς και
-            τον συνολικό αριθμό λέξεων. Επιπλέον μπορείτε να κάνετε εξαγωγή τα
-            δεδομένα αυτά σε μορφή csv.
+            Στον παρακάτω πίνακα εμφανίζονται τα κείμενα που έχουν ελεγχθεί. Πιο
+            συγκεκριμένα θα βρείτε πληροφορίες για τον βαθμό του κειμένου κάθε
+            μαθητή, τον αριθμό των ορθογραφικών, γραμματικών και λαθών στίξης
+            καθώς και τον συνολικό αριθμό λέξεων. Επιπλέον μπορείτε να κάνετε
+            εξαγωγή τα δεδομένα αυτά σε μορφή csv.
           </p>
         </div>
-        <DataTable role={ROLE} mistakes={mistakes} wordsOrth={wordsOrth} />
+        <DataTable
+          role={ROLE}
+          mistakes={mistakes}
+          wordsOrth={wordsOrth}
+          countOrth={countOrth}
+          countGram={countGram}
+          countSti={countSti}
+          change={change}
+          posted={posted}
+        />
       </section>
     </div>
   );
