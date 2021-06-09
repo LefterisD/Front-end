@@ -700,6 +700,7 @@ mark {
     justify-content: space-between;
     align-items: center;
     border-top: 2px solid #f5f5f5;
+    position: relative;
 }
 
 .word-count {
@@ -709,6 +710,11 @@ mark {
     align-items: center;
     justify-content: space-between;
     color: var(--text-color);
+}
+
+.footer #loader{
+    margin-top: .5rem;
+    margin-right: 2.5rem !important;
 }
 
 .chars {

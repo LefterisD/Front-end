@@ -25,6 +25,8 @@ const ProfessorPage = ({
   setUser,
   setRole,
   change,
+  noMistakes,
+  loading,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -115,6 +117,7 @@ const ProfessorPage = ({
         role={ROLE}
         setWordCountProf={setWordCountProf}
         setWordCountStu={setWordCountStu}
+        loading={loading}
       />
       <ProfGrade
         mistakes={mistakes}
@@ -128,6 +131,7 @@ const ProfessorPage = ({
         setFlag={setFlag}
         wordsOrth={wordsOrth}
         setPosted={setPosted}
+        noMistakes={noMistakes}
       />
       <EssayCounter
         mistakes={mistakes}

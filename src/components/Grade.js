@@ -24,6 +24,7 @@ const Grade = ({
   countSti,
   setFlag,
   wordsOrth,
+  noMistakes,
 }) => {
   const [orthComments, setOrthComments] = useState("");
   const [gramComments, setGramComments] = useState("");
@@ -98,7 +99,7 @@ const Grade = ({
   //add essay to  use table
   const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
     fetch(
-      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/student/${"όνομα"}/class/${"τμήμα"}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
       {
         method: "POST",
       }
@@ -139,7 +140,13 @@ const Grade = ({
       //Get weights to compute grade
       getWeights(orthPercentage, gramPercentage, stiPercentage);
     } else {
-      addEssay(0, 0, 0, wordCountStu, 20);
+      if (noMistakes === "yes") {
+        setOrthStats(0);
+        setGramStats(0);
+        setStiStats(0);
+        setGrade(20);
+        addEssay(0, 0, 0, wordCountStu, 20);
+      }
     }
   };
 
@@ -152,7 +159,7 @@ const Grade = ({
     }
   }, [wordsOrth]);
 
-  if (mistakes.length !== 0) {
+  if (mistakes.length !== 0 || noMistakes === "yes") {
     content = (
       <div className="grade_box">
         <FeedBack

@@ -3,6 +3,8 @@ import { HighlightWithinTextarea } from "react-highlight-within-textarea";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
+import Loader from "react-loader-spinner";
+
 const InputText = ({
   setInputText,
   getMistakes,
@@ -16,6 +18,7 @@ const InputText = ({
   role,
   setWordCountProf,
   setWordCountStu,
+  loading,
 }) => {
   const [textAreaInput, setTextAreaInput] = useState("");
   const [words_json, setWordsJson] = useState([]);
@@ -38,6 +41,7 @@ const InputText = ({
   let countOrth1;
   let countSti1;
   let countGram1;
+  let content;
 
   //Fetching the api to insert into the db or update a specific word count
   const insert_to_database = (word, type, role) => {
@@ -192,6 +196,10 @@ const InputText = ({
       setWordsGram(fakeWordsGram);
       return words;
     } else {
+      //test
+      let randomNum = -1000 + Math.floor(Math.random() * 100);
+      setWordsOrth(randomNum);
+      //test
       //If no mistakes are found
       adduser(1);
       // if mistakes array is empty use a placeholder for the words
@@ -409,18 +417,31 @@ const InputText = ({
           <div className="footer">
             <div className="word-count">
               <div className="words">
-                <span className="number-color">{wordCount}</span>:λέξεις
+                <span className="number-color">{wordCount} </span>:λέξεις
               </div>
               <div className="chars">
-                <span className="number-color">{characters}</span>:χαρακτήρες
+                <span className="number-color">{characters} </span>:χαρακτήρες
               </div>
             </div>
-            <input
-              type="submit"
-              onClick={getMistakes}
-              value="Έλεγχος"
-              id="check-text-btn"
-            />
+            {content}
+            {loading ? (
+              <div id="loader">
+                <Loader
+                  type="ThreeDots"
+                  color=" #8bd8bd"
+                  height={100}
+                  width={30}
+                  timeout={10000} //10 secs
+                />
+              </div>
+            ) : (
+              <input
+                type="submit"
+                onClick={getMistakes}
+                value="Έλεγχος"
+                id="check-text-btn"
+              />
+            )}
           </div>
         </form>
       </div>

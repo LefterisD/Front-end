@@ -124,13 +124,13 @@ const FeedBack = ({
       setFeedBackSti(message);
     }*/
 
-    if (countOrth === 0) {
+    if (orthStats === 0) {
       setFeedBackOrth(feedbackMessage[0].orth[0].correct);
     } else {
       setFeedBackOrth(feedbackMessage[0].orth[0].comment);
     }
 
-    if (countGram === 0) {
+    if (gramStats === 0) {
       setFeedBackGram(feedbackMessage[0].gram[0].correct);
     } else {
       setFeedBackGram(feedbackMessage[0].gram[0].comment);

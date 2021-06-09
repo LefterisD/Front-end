@@ -8,7 +8,7 @@ import uniqid from "uniqid";
 import FeedBack from "./FeedBack";
 import Grade from "./Grade";
 
-const StudentPage = ({ user, change }) => {
+const StudentPage = ({ user, change, noMistakes }) => {
   const [wordsToHighlightStudent, setWordsToHighlightStudent] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -29,19 +29,28 @@ const StudentPage = ({ user, change }) => {
 
   const [essayNumStu, setEssayNumStu] = useState(0);
 
+  const [loadingStu, setLoadingStu] = useState(false);
   //feedback
+
+  const [noMistakesStu, setNoMistakesStu] = useState("no");
 
   const [grade, setGrade] = useState(0);
 
   const ROLE = "student";
   const getMistakesStudent = (e) => {
     e.preventDefault();
-
+    setLoadingStu(true);
     fetch(` http://127.0.0.1:5000/api/v1/check/${inputTextStudent}`)
       .then((res) => res.json())
       .then((data) => {
         var json_obj = JSON.parse(JSON.stringify(data));
         setMistakesStudent(json_obj.matches);
+        if (json_obj.matches.length === 0) {
+          setNoMistakesStu("yes");
+        } else {
+          setNoMistakesStu("no");
+        }
+        setLoadingStu(false);
       });
 
     update_essay_count();
@@ -120,10 +129,10 @@ const StudentPage = ({ user, change }) => {
         setcountSti={setcountSti}
         setWordsOrth={setWordsOrth}
         setWordsGram={setWordsGram}
-        wordsGram={wordsGram}
         role={ROLE}
         setWordCountProf={setWordCountProf}
         setWordCountStu={setWordCountStu}
+        loading={loadingStu}
       />
       <EssayCounter
         mistakes={mistakesStudent}
@@ -143,6 +152,7 @@ const StudentPage = ({ user, change }) => {
         countSti={countSti}
         setFlag={setFlag}
         wordsOrth={wordsOrth}
+        noMistakes={noMistakesStu}
       />
       <MoreInfo info={userFilledInfo} role={ROLE} />
       <div className="chart_section">

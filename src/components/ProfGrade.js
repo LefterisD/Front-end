@@ -34,6 +34,7 @@ const ProfGrade = ({
   countSti,
   wordsOrth,
   setPosted,
+  noMistakes,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -57,7 +58,7 @@ const ProfGrade = ({
   const [feedBackGram, setFeedBackGram] = useState("");
   const [feedBackSti, setFeedBackSti] = useState("");
 
-  //const [noMistakes, setNoMistakes] = useState(false);
+  const [dataExist, setDataExist] = useState("");
 
   let content;
 
@@ -93,8 +94,10 @@ const ProfGrade = ({
   };
 
   const findGrade = () => {
+    console.log("EDWW TA KALA MISTAKES", mistakes);
     if (mistakes.length !== 0) {
       //Essay grading
+      setDataExist(new Date());
       compute_grade(0);
     } else {
       compute_grade(1);
@@ -133,10 +136,15 @@ const ProfGrade = ({
       getWeights(orthPercentage, gramPercentage, stiPercentage);
     } else {
       //setNoMistakes(true);
-      fillData(20);
-      setGrade(20);
-      addEssay(0, 0, 0, wordCountProf, 20);
-      setPosted(new Date());
+      if (noMistakes === "yes") {
+        setOrthStats(0);
+        setGramStats(0);
+        setStiStats(0);
+        fillData(20);
+        setGrade(20);
+        addEssay(0, 0, 0, wordCountProf, 20);
+        setPosted(new Date());
+      }
     }
   };
 
@@ -218,7 +226,7 @@ const ProfGrade = ({
     setAferFixMessage("");
   }, [wordsOrth]);
 
-  if (mistakes.length !== 0) {
+  if (mistakes.length !== 0 || noMistakes === "yes") {
     content = (
       <div className="grade_box">
         <FeedBack

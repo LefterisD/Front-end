@@ -25,10 +25,14 @@ function App() {
   var subtitle;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [mistakes, setMistakes] = useState([]);
+  const [noMistakes, setNoMistakes] = useState("no");
   const [inputText, setInputText] = useState("");
   const [user, setUser] = useState("");
   const [role, setRole] = useState("");
   const [change, setChange] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
   let nameForm;
   const STUDENT_TEXT =
     "Είσαι μαθητής; Χρησιμοποίησε την εφαρμογή 'Για μαθητές' ώστε να ελέγξεις τις εκθέσεις σου. ";
@@ -37,12 +41,18 @@ function App() {
 
   const getMistakes = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     fetch(` http://127.0.0.1:5000/api/v1/check/${inputText}`)
       .then((res) => res.json())
       .then((data) => {
         var json_obj = JSON.parse(JSON.stringify(data));
         setMistakes(json_obj.matches);
+        if (json_obj.matches.length === 0) {
+          setNoMistakes("yes");
+        } else {
+          setNoMistakes("no");
+        }
+        setLoading(false);
       });
 
     update_essay_count();
@@ -136,10 +146,12 @@ function App() {
               setUser={setUser}
               setRole={setRole}
               change={change}
+              noMistakes={noMistakes}
+              loading={loading}
             />
           </Route>
           <Route path="/students">
-            <StudentPage user={user} change={change} />
+            <StudentPage user={user} change={change} noMistakes={noMistakes} />
           </Route>
         </Switch>
       </Router>
@@ -357,17 +369,17 @@ function App() {
           </div>
           <div className="main-section">
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing
-              elit.Cupiditate et pariatur aspernatur autem ? Quo debitis amet
-              soluta accusamus!Blanditiis aut unde ipsa eligendi quo quas
-              expedita nesciunt commodi error.Praesentium eius in reprehenderit
-              debitis est, eum repudiandae sint, quasi natus dolor amet
-              explicabo deleniti accusantium, ratione soluta ab corrupti facilis
-              quaerat autem quia voluptatum vero cumque ? Sequi possimus, illo
-              facere et nostrum laudantium quia iusto quos eos quas
-              commodi.Laudantium in nihil deserunt odio.Nihil tenetur
-              perspiciatis facere deserunt consequatur rerum quaerat ea
-              aliquid.Sequi possimus.
+              Το Checkit είναι μία web εφαρμογή που χρησιμοποιείται για τον
+              έλεγχο κειμένων της ελληνικής γλώσσας. Η εφαρμογή χωρίζεται σε δύο
+              υποεφαρμογές, οι οποίες ονομάζονται 'Για Μαθητές' και 'Για
+              Δασκάλους'. Τόσο η εφαρμογή του μαθητή όσο και η εφαρμογή για του
+              δασκάλου, εντοπίζει τα ορθογραφικά, γραμματικά και λάθη στίξης των
+              κειμένων. Σκοπός της υπό-εφαρμογής 'Για μαθητές' είναι η μείωση
+              των λαθών του μαθητή που επιτυγχάνεται με την χρήση κατάλληλων
+              σχολίων και στατιστικών στο χρόνο. Η υποεφαρμογή 'Για Δασκάλους',
+              στοχεύει στην μείωση του χρόνου διόρθωσης και βαθμολόγησης
+              κειμένων των μαθητών αλλά και στην εξαγωγή πληροφοριών που αφορούν
+              τα κείμενα των μαθητών.
             </p>
             <div className="icon-wrapper">
               <i class="fab fa-github"> </i>
