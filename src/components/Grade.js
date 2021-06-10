@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#8BD8BD", "#243665"];
+const COLORS = ["#243665", "#e1e5ea"];
 
 const Grade = ({
   mistakes,
@@ -211,11 +211,7 @@ const Grade = ({
             </p>
           </div>
         </div>
-        <div id="color-info">
-          <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
-          <span className="color-box">ΣΤΙΞΗΣ</span>
-          <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
-        </div>
+
         <div className="content_feedback">
           <p id="title">Σχόλια:</p>
           <div className="comments">
@@ -228,6 +224,11 @@ const Grade = ({
             <div className="comment-wrapper">
               <p className="comment">{feedBackSti}</p>
             </div>
+          </div>
+          <div id="color-info" className="stu-types-info">
+            <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
+            <span className="color-box">ΣΤΙΞΗΣ</span>
+            <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
           </div>
         </div>
       </div>

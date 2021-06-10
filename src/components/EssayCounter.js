@@ -91,6 +91,17 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
       });
   };
 
+  const clear_data = () => {
+    let curr_user = localStorage.getItem("uniqid");
+    fetch(
+      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${role}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
+    window.location.reload();
+  };
+
   useEffect(() => {
     get_essay_count();
   }, [wordsOrth]);
@@ -98,7 +109,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
   if (role == "professor") {
     compoClass = "counter-wrapper";
     proffContent = (
-      <div>
+      <div id="prof-side-bar-title">
         <p className="side-bar-title">Στοιχεια μαθητη</p>
         <div className="student_info_wrapper">
           <div className="student_info_form">
@@ -123,7 +134,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
               </div>
               <div id="btn_wrapper">
                 <button id="add_student_info" onClick={addStudentInfo}>
-                  Πρσθήκη
+                  Προσθήκη
                 </button>
               </div>
             </form>
@@ -137,6 +148,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
 
   return (
     <div className={compoClass}>
+      {proffContent}
       <div className="side-bar-info">
         <p className="side-bar-title">ΠΛΗΡΟΦΟΡΙΕΣ</p>
         <div className="upper-section">
@@ -158,8 +170,11 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
               <p>{averageGrade}</p>
             </div>
           </div>
+          <div className="delete-content">
+            <p>Διαγραφή δεδομένων</p>
+            <button onClick={clear_data}>Διαγραφή</button>
+          </div>
         </div>
-        {proffContent}
       </div>
     </div>
   );

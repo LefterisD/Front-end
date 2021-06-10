@@ -7,6 +7,7 @@ import ChartOne from "./ChartOne";
 import uniqid from "uniqid";
 import FeedBack from "./FeedBack";
 import Grade from "./Grade";
+import { PagesSharp } from "@material-ui/icons";
 
 const StudentPage = ({ user, change, noMistakes }) => {
   const [wordsToHighlightStudent, setWordsToHighlightStudent] = useState([]);
@@ -72,17 +73,6 @@ const StudentPage = ({ user, change, noMistakes }) => {
       method: "POST",
     }).then((results) => console.log(results));
   };
-  //Delete all mistakes from database
-  const clear_data = () => {
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
-    window.location.reload();
-  };
 
   useEffect(() => {
     let stored_id = localStorage.getItem("uniqid");
@@ -98,6 +88,11 @@ const StudentPage = ({ user, change, noMistakes }) => {
     let stored_id = localStorage.getItem("uniqid");
     if (stored_id) {
       setStudentUser(stored_id);
+      if (localStorage.getItem("Role")) {
+        console.log("YPARXEI");
+      } else {
+        localStorage.setItem("Role", "student");
+      }
       addUser(stored_id);
     }
   }, []);
@@ -162,10 +157,6 @@ const StudentPage = ({ user, change, noMistakes }) => {
               Συνολικά στατιστικά <span id="chart-span">{essayNumStu} </span>
               κειμένων
             </h2>
-            <div className="delete-content">
-              <p>Διαγραφή δεδομένων</p>
-              <button onClick={clear_data}>Διαγραφή</button>
-            </div>
           </div>
           <Charts
             countOrth={countOrth}

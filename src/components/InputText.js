@@ -417,10 +417,10 @@ const InputText = ({
           <div className="footer">
             <div className="word-count">
               <div className="words">
-                <span className="number-color">{wordCount} </span>:λέξεις
+                λέξεις:<span className="number-color"> {wordCount}</span>
               </div>
               <div className="chars">
-                <span className="number-color">{characters} </span>:χαρακτήρες
+                χαρακτήρες:<span className="number-color"> {characters} </span>
               </div>
             </div>
             {content}

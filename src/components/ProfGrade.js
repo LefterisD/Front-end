@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#16c79a ", "#e1e5ea"];
+const COLORS = ["#243665", "#e1e5ea"];
 
 const customStyles = {
   overlay: {
@@ -293,8 +293,8 @@ const ProfGrade = ({
           </div>
           <div id="color-info">
             <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
-            <span className="color-box">ΣΤΙΞΗΣ</span>
             <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
+            <span className="color-box">ΣΤΙΞΗΣ</span>
           </div>
         </div>
         <div className="content_feedback">

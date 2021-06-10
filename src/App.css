@@ -654,7 +654,7 @@ mark {
 }
 
 .footer #check-text-btn {
-    background-color: #8bd8bd;
+    background-color: #243665;
     padding: 3px 6px;
     margin-right: 20px;
     border-radius: 5px;
@@ -670,6 +670,7 @@ mark {
 .footer #check-text-btn:hover {
     transform: translateY(-0.1rem);
     box-shadow: 0 0 0.4rem rgb(0, 0, 0, 0.2);
+    background-color: #8bd8bd;
 }
 
 .footer #check-text-btn:focus {
@@ -904,6 +905,9 @@ mark {
     height: 80rem;
     border-right: 3px solid #7c7c7c23;
 }
+#pie-legend{
+    margin-top: 1rem !important;
+}
 
 /*------------------------ essay section ----------------*/
 
@@ -1052,23 +1056,22 @@ mark {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin-top: 100px;
+    margin-top: 117px;
     z-index: 10000000000;
     position: relative;
 }
 
 .title-prof {
-    color: #8bd8bd;
-    font-size: 60px;
+    color: #fff;
+    text-shadow:5px 5px #1b294b;
+    font-size: 50px;
     letter-spacing: 4px;
-    font-style: italic;
 }
 
 .title-chart {
     color: #243665;
     font-size: 25px;
     letter-spacing: 3px;
-    font-style: italic;
 }
 
 #chart-span {
@@ -1087,20 +1090,26 @@ mark {
     margin-bottom: 50px;
 }
 .delete-content {
-    width: 100%;
-    padding-left: 6rem;
+    text-align: center;
+    margin-top: .8rem;
 }
-#sec-title{
-    margin-bottom: 58px;
+
+.delete-content p {
+    color: #243665;
+    font-size: 18px;
+    z-index: 1000000000000;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1rem;
 }
 .chart-section-title p {
     color: #243665;
     font-size: initial;
-    font-style: italic;
+
     font-weight: bolder;
     margin-bottom: -5px;
 }
-.chart-section-title button {
+.chart-section-title button{
     background-color: #8bd8bd;
     padding: 3px 6px;
     margin-right: 20px;
@@ -1119,11 +1128,11 @@ mark {
 }
 
 .yellow {
-    background-color: #ffe5ac !important;
+    background-color: #f07756af !important;
 }
 
 .green {
-    background-color: #c3fae7 !important;
+    background-color: #ffe5ac !important;
 }
 
 .blue {
@@ -1246,8 +1255,8 @@ mark {
     flex-direction: column;
     margin-bottom: 50px;
     position: absolute;
-    top: 350px;
-    left: 30px;
+    top: 305px;
+    left: 170px;
     animation-name: animate-counter;
     animation-duration: .5s;
     animation-delay: 1s;
@@ -1255,7 +1264,9 @@ mark {
     animation-fill-mode: forwards;
     position: absolute;
     opacity: 0;
+    background-color: #fff;
 }
+
 .counter-wrapper-stu{
     top: 500px;
     animation-delay: 2s !important;
@@ -1271,7 +1282,7 @@ mark {
         opacity: 1;
     }
     100%{
-        left: 80px;
+        left: 170px;
         opacity: 1;
     }
 }
@@ -1279,8 +1290,9 @@ mark {
     padding: .7rem 1rem;
     color: #243665;
     font-size: 18px;
-    z-index: 100000000;
+    z-index: 1000000000000;
     text-transform: uppercase;
+    text-align: center;
 }
 
 
@@ -1290,7 +1302,7 @@ mark {
     justify-content: space-between;
     align-items: flex-start;
     text-align: left;
-    border-top: 2px solid #9c9c9c28;
+    /*border-top: 2px solid #9c9c9c28;*/
     padding: .7rem 2rem;
 }
 
@@ -1302,7 +1314,7 @@ mark {
 }
 .upper-section h2 {
     color: var(--text-color);
-    font-weight: 100;
+    font-weight: 400;
     font-size: 20px;
 }
 .number-wrapper {
@@ -1351,6 +1363,13 @@ mark {
     top: 350px;
     width: 500px;
     padding: 10px;
+}
+
+#greeting-message{
+    color: #fff;
+    margin-top: 1rem;
+    margin-bottom: -1rem;
+    font-size: 1.5rem;
 }
 
 .form-cont .container {
@@ -1721,7 +1740,7 @@ mark {
     top: 95px;
     left: 160px;
     font-size: 25px;
-    color:  #16c79a;
+    color:  #243665;
 }
 
 #grade-span{
@@ -1741,17 +1760,18 @@ mark {
     padding: .1rem .5rem;
     color: #fff;
     border-radius: 5px;
+    width: 6.4rem;
+    text-align: center;
 }
 
 .color-box:nth-child(1){
-    background-color:  #243665e7;
-}
-.color-box:nth-child(3){
-    background-color:  #8bd8bde7;
+    background-color:  #5daae9d7;
 }
 .color-box:nth-child(2){
     background-color:  #ffbb28e1;
-    margin: 0 1rem;
+}
+.color-box:nth-child(3){
+    background-color:  #D85531;
 }
 
 .content_feedback{
@@ -1766,6 +1786,10 @@ mark {
     
     padding-left: 0.8rem;
     color: #243665;
+}
+
+.stu-types-info{
+    margin-bottom: 1rem !important;
 }
 
 .comments {
@@ -1796,13 +1820,13 @@ mark {
 }
 
 .comments .comment-wrapper:nth-child(1) .comment::before{
-    background-color: #243665;
+    background-color: #5daae9d7;
 }
 .comments .comment-wrapper:nth-child(2) .comment::before{
-    background-color: #8BD8BD;
+    background-color: #FFBB28;
 }
 .comments .comment-wrapper:nth-child(3) .comment::before{
-    background-color: #FFBB28;
+    background-color: #D85531;
 }
 
 .weight_update_btns{
@@ -1837,9 +1861,8 @@ mark {
 /*-------------------------------Student info from --------------------------*/
 .student_info_wrapper{
     background: #fff;
-    border-top: 2px solid #9c9c9c28;
+    border-bottom: 2px solid #9c9c9c28;
     padding: .7rem 2rem;
-    border-radius: 0 0 8px 8px;
 }
 
 
@@ -1888,9 +1911,9 @@ mark {
     place-items: center;
     margin-top: .5rem;
 }
-#add_student_info{
-    background-color: #8bd8bd;
-    padding: .1rem .3rem;
+#add_student_info, .delete-content button{
+    background-color: #243665;
+    padding: .2rem .4rem;
     margin-right: 20px;
     border-radius: 5px;
     border: none;
@@ -1900,12 +1923,14 @@ mark {
     font-size: 15px;
     transition: 0.2s;
     z-index: 10;
+    text-align: center;
 
 }
 
-#add_student_info:hover {
+#add_student_info:hover, .delete-content button:hover {
     transform: translateY(-0.07rem);
     box-shadow: 0 0 0.4rem rgb(0, 0, 0, 0.1);
+    background-color: #8bd8bd;
 }
 
 
@@ -1923,7 +1948,7 @@ mark {
 }
 #computed_grade{
     font-size: 2rem;
-    color: #16c79a;
+    color: #243665;
 }
 
 .new_grade_input{
@@ -1970,9 +1995,9 @@ button.type_btn:hover{
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 }
 
-#spelling{background-color: #243665;}
-#grammar{background-color: #8BD8BD;}
-#punctuation{background-color: #FFBB28;}
+#spelling{background-color: #5daae9d7;}
+#grammar{background-color: #ffbb28e1;}
+#punctuation{background-color: #D85531;}
 
 
 #type_btn_wrapper{

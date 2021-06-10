@@ -71,17 +71,6 @@ const ProfessorPage = ({
     }).then((results) => console.log(results));
   };
 
-  const clear_data = () => {
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
-    window.location.reload();
-  };
-
   //Checks if local storage uniqid EXISTS and sets the global userid state to the stored id
   //IF not it uses an external uniqid generator and sets the uniqid in local storage
   //then is uses the addUser function from above to insert the user into the users table
@@ -91,6 +80,12 @@ const ProfessorPage = ({
     setStoredID(stored_id);
     if (stored_id) {
       setUser(stored_id);
+      if (localStorage.getItem("Role")) {
+        console.log("YPARXEI");
+      } else {
+        localStorage.setItem("Role", "professor");
+      }
+
       addUser(stored_id);
     }
   }, []);
@@ -211,10 +206,6 @@ const ProfessorPage = ({
               Συνολικά στατιστικά <span id="chart-span">{essayNum} </span>
               κειμένων
             </h2>
-            <div className="delete-content">
-              <p>Διαγραφή δεδομένων</p>
-              <button onClick={clear_data}>Διαγραφή</button>
-            </div>
           </div>
           <Charts
             countOrth={countOrth}
