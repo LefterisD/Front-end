@@ -6,6 +6,7 @@ import EssayCounter from "./EssayCounter";
 import DataTable from "./DataTable";
 import ChartOne from "./ChartOne";
 import ProfGrade from "./ProfGrade";
+import AlertMessage from "./AlertMessage";
 
 const customStyles = {
   overlay: {
@@ -27,6 +28,7 @@ const ProfessorPage = ({
   change,
   noMistakes,
   loading,
+  alert,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -99,6 +101,7 @@ const ProfessorPage = ({
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισατε κ.{userName}</h1>
       </div>
+      {alert ? <AlertMessage /> : <div></div>}
       <InputText
         setInputText={setInputText}
         getMistakes={getMistakes}
@@ -134,71 +137,6 @@ const ProfessorPage = ({
         setEssayNum={setEssayNum}
         wordsOrth={wordsOrth}
       />
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeAddNewEssayModal}
-        className="modal-essay"
-        style={customStyles}
-        contentLabel="Test Modal"
-        closeTimeoutMS={300}
-      >
-        <header>
-          <button onClick={closeAddNewEssayModal}>
-            <i class="fas fa-times"></i>
-          </button>
-        </header>
-        <div className="container">
-          <div className="title">
-            <h1>Add new Essay</h1>
-          </div>
-          <div className="main-section">
-            <div className="input-box">
-              <input
-                type="text"
-                id="context"
-                name="context"
-                className="input-field"
-                placeholder=" "
-              />
-              <label htmlFor="context">Title</label>
-            </div>
-            <div className="input-box">
-              <textarea
-                name="full-topic"
-                id="full-topic"
-                className="input-field"
-                placeholder=" "
-              ></textarea>
-              <label htmlFor="full-topic">Full Topic</label>
-            </div>
-            <div className="line">
-              <div className="left">
-                <input
-                  type="text"
-                  id="date"
-                  name="date"
-                  className="input-field"
-                  placeholder=" "
-                />
-                <label htmlFor="date">Date</label>
-              </div>
-              <div className="right">
-                <input
-                  type="text"
-                  id="author"
-                  name="author"
-                  className="input-field"
-                  placeholder=" "
-                />
-                <label htmlFor="author">Author</label>
-              </div>
-            </div>
-            <div className="btn-wrapper">
-              <button className="add">Add</button>
-            </div>
-          </div>
-        </div>
-      </Modal>
       <div className="chart_section">
         <div className="charts">
           <div className="chart-section-title">

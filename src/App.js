@@ -31,6 +31,7 @@ function App() {
   const [role, setRole] = useState("");
   const [change, setChange] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(false);
 
   let nameForm;
   let cards;
@@ -62,7 +63,10 @@ function App() {
       update_essay_count();
       setChange(!change);
     } else {
-      alert("Παρακαλώ εισάγετε όνομα μαθητή και τμήμα!");
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 8000);
     }
   };
 
@@ -191,6 +195,7 @@ function App() {
               change={change}
               noMistakes={noMistakes}
               loading={loading}
+              alert={alert}
             />
           </Route>
           <Route path="/students">

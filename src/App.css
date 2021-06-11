@@ -2015,3 +2015,92 @@ button.type_btn:hover{
     font-size: 15px !important;
     font-style: italic;
 }
+
+
+/*---------------------------------- Alert Message -------------------
+
+box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    background-color: #fff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 20rem;
+    padding: 15px 0px;
+    border-radius: 5px;
+    cursor: pointer;
+    animation-name: animate;
+    animation-duration: .7s;
+    animation-delay: 1s;
+    animation-timing-function: cubic-bezier(.51,.92,.24,1.15);
+    animation-fill-mode: forwards;
+    position: absolute;
+    opacity: 0;
+    top: 330px;
+    left: 10px;*/
+#alert_wrapper{
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    top: 5rem;
+    left: 1rem;
+    z-index: 1000;
+    background-color:#fff;
+    width: 20rem;
+    padding: 15px 0px;
+    border-radius: 5px 5px;
+    animation-name: animate-alert;
+    animation-duration: .4s;
+    animation-timing-function: cubic-bezier(.51,.92,.24,1.15);
+    animation-fill-mode: forwards;
+}
+#alert-cont{
+    background-color:#fff;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+#alert_wrapper p {
+    color: var(--text-color);
+    font-size: 15px;
+}
+.fa-exclamation-circle{
+    color: #243665;
+    font-size: 23px;
+    margin: 0 1rem;
+}
+
+#alert-cont::after{
+    content: "";
+    height: 3px;
+    background-color: #8bd8bd;
+    display: inline-block;
+    transition: all;
+    z-index: 10000;
+    position: absolute;
+    top:3.25rem;
+    margin-left: 2px;
+    width: 98%;
+    overflow-x: hidden !important;
+    animation: underline-animated 8s forwards;
+    border-radius: 5px;
+}
+
+@keyframes underline-animated {
+    0%{
+        width: 100%;
+    }
+    100%{
+        width:0;
+    }
+    
+  }
+
+  @keyframes animate-alert {
+    0% {
+        left: -50rem;
+
+    }
+    100%{
+        left: 1rem;
+    }
+  }
