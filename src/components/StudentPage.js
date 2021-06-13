@@ -8,6 +8,7 @@ import uniqid from "uniqid";
 import FeedBack from "./FeedBack";
 import Grade from "./Grade";
 import { PagesSharp } from "@material-ui/icons";
+import DropDownBtn from "./DropDownBtn";
 
 const StudentPage = ({ user, change, noMistakes }) => {
   const [wordsToHighlightStudent, setWordsToHighlightStudent] = useState([]);
@@ -99,6 +100,12 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   useEffect(() => {
     let stored_userName = localStorage.getItem("userName");
+    if (
+      stored_userName.slice(-1) === "ς" ||
+      stored_userName.slice(-1) === "σ"
+    ) {
+      stored_userName = stored_userName.slice(0, -1);
+    }
     setUserName(stored_userName);
     let info = localStorage.getItem("info");
     if (localStorage.getItem("info")) {
@@ -111,6 +118,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   return (
     <div className="return">
+      <DropDownBtn />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισες {userName}</h1>
       </div>
@@ -172,7 +180,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά τελευταίου κειμένου
+              Στατιστικά τρέχοντος κειμένου
             </h2>
           </div>
           <ChartOne

@@ -105,6 +105,9 @@ function App() {
   if (localStorage.getItem("userName")) {
     let user_role = localStorage.getItem("Role");
     let user_name = localStorage.getItem("userName");
+    if (user_name.slice(-1) === "ς" || user_name.slice(-1) === "σ") {
+      user_name = user_name.slice(0, -1);
+    }
     if (user_role) {
       nameForm = (
         <p id="greeting-message">

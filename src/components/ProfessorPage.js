@@ -7,6 +7,7 @@ import DataTable from "./DataTable";
 import ChartOne from "./ChartOne";
 import ProfGrade from "./ProfGrade";
 import AlertMessage from "./AlertMessage";
+import DropDownBtn from "./DropDownBtn";
 
 const customStyles = {
   overlay: {
@@ -94,10 +95,17 @@ const ProfessorPage = ({
 
   useEffect(() => {
     let stored_userName = localStorage.getItem("userName");
+    if (
+      stored_userName.slice(-1) === "ς" ||
+      stored_userName.slice(-1) === "σ"
+    ) {
+      stored_userName = stored_userName.slice(0, -1);
+    }
     setUserName(stored_userName);
   }, []);
   return (
     <div className="return">
+      <DropDownBtn />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισατε κ.{userName}</h1>
       </div>
@@ -137,6 +145,7 @@ const ProfessorPage = ({
         setEssayNum={setEssayNum}
         wordsOrth={wordsOrth}
       />
+
       <div className="chart_section">
         <div className="charts">
           <div className="chart-section-title">
@@ -159,7 +168,7 @@ const ProfessorPage = ({
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά τελευταίου κειμένου
+              Στατιστικά τρέχοντος κειμένου
             </h2>
           </div>
           <ChartOne
