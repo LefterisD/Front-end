@@ -47,7 +47,7 @@ const Grade = ({
 
   let content;
 
-  const fillData = () => {
+  const fillData = (grade) => {
     if (grade) {
       let temp_data = [
         {
@@ -91,7 +91,7 @@ const Grade = ({
 
         temp_grade = Math.round(temp_grade * 10) / 10;
 
-        //fillData(temp_grade);
+        fillData(temp_grade);
         setGrade(temp_grade);
         addEssay(countOrth, countGram, countSti, wordCountStu, temp_grade);
       });
@@ -144,6 +144,7 @@ const Grade = ({
         setOrthStats(0);
         setGramStats(0);
         setStiStats(0);
+        fillData(20);
         setGrade(20);
         addEssay(0, 0, 0, wordCountStu, 20);
       }
@@ -155,7 +156,6 @@ const Grade = ({
       setFlag(true);
     } else {
       findGrade();
-      fillData(grade);
     }
   }, [wordsOrth]);
 

@@ -105,7 +105,7 @@ const ProfessorPage = ({
   }, []);
   return (
     <div className="return">
-      <DropDownBtn />
+      <DropDownBtn role={ROLE} />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισατε κ.{userName}</h1>
       </div>

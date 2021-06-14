@@ -53,8 +53,10 @@ const StudentPage = ({ user, change, noMistakes }) => {
           setNoMistakesStu("no");
         }
         setLoadingStu(false);
+      })
+      .catch(function () {
+        setLoadingStu(false);
       });
-
     update_essay_count();
   };
 
@@ -118,7 +120,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   return (
     <div className="return">
-      <DropDownBtn />
+      <DropDownBtn role={ROLE} />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισες {userName}</h1>
       </div>
